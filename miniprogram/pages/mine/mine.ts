@@ -1,6 +1,7 @@
 import JcqPage from '../../base/JcqPage'
 
 const app = getApp<IAppOption>()
+const cloud = app.cloud!() as WxCloud
 
 JcqPage({
   data: {
