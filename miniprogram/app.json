@@ -1,0 +1,58 @@
+{
+  "pages": [
+    "pages/start/start",
+    "pages/index/index",
+    "pages/mine/mine",
+    "pages/register/register",
+    "pages/legal/service",
+    "pages/batch/batch",
+    "pages/batch/join",
+    "pages/batch/create",
+    "pages/checkin/checkin",
+    "pages/checkin/result"
+  ],
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "课程",
+        "iconPath": "/asset/tab_course.png",
+        "selectedIconPath": "/asset/tab_course_selected.png"
+      },
+      {
+        "pagePath": "pages/batch/batch",
+        "text": "上课搭子",
+        "iconPath": "/asset/tab_friend.png",
+        "selectedIconPath": "/asset/tab_friend_selected.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我",
+        "iconPath": "/asset/tab_mine.png",
+        "selectedIconPath": "/asset/tab_mine_selected.png"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于签到时确定位置"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
+  "lazyCodeLoading": "requiredComponents",
+  "style": "v2",
+  "darkmode": true,
+  "themeLocation": "theme.json",
+  "window": {
+    "backgroundTextStyle": "@bgTextStyle",
+    "navigationBarBackgroundColor": "@navBgColor",
+    "navigationBarTitleText": "职有校园",
+    "navigationBarTextStyle": "@navTextStyle"
+  },
+  "sitemapLocation": "sitemap.json",
+  "useExtendedLib": {
+    "weui": true
+  }
+}

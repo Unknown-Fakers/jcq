@@ -1,0 +1,33 @@
+<view class="page" data-weui-theme="{{ theme }}">
+  <mp-toptips msg="{{ error }}" type="error" show="{{ error }}"></mp-toptips>
+
+  <mp-form-page title="绑定校园信息" subtitle="请输入您在重庆科技学院的学号信息，一个学号只可绑定一个微信，非本校学生不可使用该程序。">
+    <mp-form id="form" models="{{ student }}" rules="{{ formRules }}">
+      <mp-cells title="学生信息" footer="姓名仅用于辅助确认身份">
+        <label>
+          <mp-cell title="姓名" prop="name">
+            <input class="weui-input" placeholder="请输入本人姓名" confirm-type="next" bind:confirm="focusToStudentNumber" data-field="name" bind:input="onFormInput" />
+          </mp-cell>
+        </label>
+        <label>
+          <mp-cell title="学号" prop="number">
+            <input class="weui-input" placeholder="请输入本人学号" type="number" focus="{{ isFocusToStudentNumber }}" data-field="number" bind:input="onFormInput" />
+          </mp-cell>
+        </label>
+      </mp-cells>
+    </mp-form>
+
+    <checkbox-group slot="tips" bind:change="onAgreementsChanged" wx:if="{{ false }}">
+      <label class="weui-agree">
+        <checkbox class="weui-agree__checkbox-check" />
+
+        <text class="weui-agree__checkbox"></text>
+        <view class="weui-agree__text">阅读并同意<navigator url="/pages/legal/service">《服务协议》</navigator>和<navigator>《隐私政策》</navigator></view>
+      </label>
+    </checkbox-group>
+
+    <view slot="button">
+      <button class="weui-btn" type="primary" bind:tap="submit">绑定</button>
+    </view>
+  </mp-form-page>
+</view>

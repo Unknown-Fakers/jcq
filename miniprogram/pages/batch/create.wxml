@@ -1,0 +1,26 @@
+<view class="page" data-weui-theme="{{ theme }}">
+  <mp-toptips msg="{{ error }}" type="error" show="{{ error }}" />
+
+  <mp-form-page title="创建搭子圈">
+    <mp-form id="form" models="{{ batch }}" rules="{{ formRules }}">
+      <mp-cells>
+        <label>
+          <mp-cell prop="name" title="名称">
+            <input class="weui-input" placeholder="请输入搭子圈名称" bind:input="onBatchNameInput" />
+          </mp-cell>
+        </label>
+      </mp-cells>
+
+      <mp-cells title="关联课程" footer="仅能关联自己有的课程，创建后不可修改。其他同学加入圈子，必须满足所有关联的课程。">
+        <mp-loading type="circle" show="{{ isLoadingCourses }}" />
+        <mp-checkbox-group prop="courses" multi="{{ true }}" bind:change="onAttachedCoursesChanged">
+          <mp-checkbox wx:for="{{ courses }}" wx:key="id" wx:for-item="course" label="{{ course.name }}" value="{{ course.number }}" checked="{{ course.selected }}" />
+        </mp-checkbox-group>
+      </mp-cells>
+    </mp-form>
+
+    <view slot="button">
+      <button class="weui-btn" type="primary" bind:tap="createBatch">确定</button>
+    </view>
+  </mp-form-page>
+</view>

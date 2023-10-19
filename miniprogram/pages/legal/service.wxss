@@ -1,0 +1,31 @@
+.dates {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14rpx 30rpx;
+  box-sizing: border-box;
+  font-size: small;
+  font-weight: bold;
+  box-shadow: 0 8rpx 8rpx 4rpx #00000011;
+  margin-bottom: 8rpx;
+}
+
+.article {
+  box-sizing: border-box;
+}
+
+.article view {
+  text-indent: 2em;
+  box-sizing: border-box;
+  display: block;
+  font-size: 27rpx;
+  line-height: 50rpx;
+  margin: 8rpx 30rpx;
+}
+
+.article .title {
+  font-size: 45rpx;
+  line-height: 100rpx;
+  text-indent: 0;
+}

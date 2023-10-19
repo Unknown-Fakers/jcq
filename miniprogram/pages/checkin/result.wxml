@@ -1,0 +1,29 @@
+<view class="page">
+  <view class="weui-msg">
+    <view class="weui-msg__icon-area">
+      <icon wx:if="{{ failed.length }}" type="warn" size="64" color="orange" />
+      <icon wx:else type="success" size="64" />
+    </view>
+    <view class="weui-msg__text-area">
+      <view class="weui-msg__title">签到{{ failed.length ? '完成' : '成功' }}</view>
+      <view class="weui-msg__desc">
+        <block wx:if="{{ failed.length }}">成功 {{ succeed }} 人 / 共 {{ succeed + failed.length }} 人</block>
+        <block wx:else>成功 {{ succeed }} 人</block>
+      </view>
+      <view class="weui-msg__custom-area" wx:if="{{ failed.length }}">
+        <mp-cells>
+          <mp-cell wx:for="{{ failed }}" value="{{ item.student_number }}">
+            <view wx:if="{{ item.code === '-1' || item.code === '0' }}" slot="footer">签到码无效</view>
+            <view wx:if="{{ item.code === '-2' }}" slot="footer">登录设备过多</view>
+            <view wx:if="{{ item.code !== '-2' && item.code !== '-1' && item.code !== '0' }}" slot="footer">未知错误码：{{ item.code }}</view>
+          </mp-cell>
+        </mp-cells>
+      </view>
+    </view>
+    <view class="weui-msg__opr-area">
+      <view class="weui-btn-area">
+        <button class="weui-btn" type="{{ failed.length ? 'default' : 'primary' }}" bind:tap="back">返回</button>
+      </view>
+    </view>
+  </view>
+</view>

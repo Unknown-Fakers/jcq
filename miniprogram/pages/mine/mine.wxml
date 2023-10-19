@@ -1,0 +1,9 @@
+<view class="page" data-weui-theme="{{ theme }}">
+  <view class="user-detail">
+    <view>{{ username }}</view>
+  </view>
+
+  <mp-cells>
+    <mp-cell ext-class="button button--danger" value="解绑学号" hover bind:tap="unbind" />
+  </mp-cells>
+</view>

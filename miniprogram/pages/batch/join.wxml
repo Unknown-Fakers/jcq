@@ -1,0 +1,23 @@
+<view class="page" data-weui-theme="{{ theme }}">
+  <mp-toptips msg="{{ error }}" type="error" show="{{ error }}" />
+
+  <view class="batch-detail-container">
+    <mp-msg wx:if="{{ batch.value && batch.diff.length !== 0 }}" desc="您不满足加入该搭子圈的条件" type="warn" title="{{ batch.text }}" desc="您缺失 {{ batch.diff.length }} 门与该圈子关联的课程，不满足加入条件，无法加入该搭子圈。">
+      <view slot="footer">{{ batch.value }}</view>
+    </mp-msg>
+
+    <mp-msg wx:if="{{ batch.value && batch.diff.length === 0 }}" title="{{ batch.text }}" desc="搭子圈关联了以下 {{ batch.courseDisplayNames.length }} 门课程，要加入该搭子圈吗？">
+      <view slot="extend" class="weui-list-tips">
+        <view class="weui-list-tips__item course-name" wx:for="{{ batch.courseDisplayNames }}" wx:key="index">{{ item }}</view>
+      </view>
+      <view slot="handle">
+        <button class="weui-btn" type="primary" bind:tap="confirmJoinBatch">确认加入</button>
+      </view>
+      <view slot="footer">{{ batch.value }}</view>
+    </mp-msg>
+  </view>
+
+  <view class="searchbar-container">
+    <mp-searchbar class="searchbar" search="{{ search }}" bind:selectresult="displayBatchDetail" focus="{{ true }}" />
+  </view>
+</view>

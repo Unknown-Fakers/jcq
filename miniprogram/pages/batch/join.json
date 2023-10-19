@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "mp-searchbar": "weui-miniprogram/searchbar/searchbar",
+    "mp-msg": "weui-miniprogram/msg/msg",
+    "mp-toptips": "weui-miniprogram/toptips/toptips"
+  },
+  "navigationBarTitleText": "搭子圈"
+}

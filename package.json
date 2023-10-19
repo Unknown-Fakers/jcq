@@ -1,0 +1,13 @@
+{
+  "name": "jcq",
+  "version": "1.0.0",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "miniprogram-api-typings": "^3.12.1"
+  },
+  "main": ".eslintrc.js",
+  "description": ""
+}

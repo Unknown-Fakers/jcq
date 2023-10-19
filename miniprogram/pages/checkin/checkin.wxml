@@ -1,0 +1,38 @@
+<view class="page" data-weui-theme="{{ theme }}">
+  <mp-toptips msg="{{ error }}" type="error" show="{{ error }}" />
+
+  <mp-form>
+    <mp-cells ext-class="course-info">
+      <mp-cell>
+        <view slot="icon" class="course-image-placeholder">课程</view>
+        <text>{{ course.name }}</text>
+        <view class="teacher">{{ course.teacher.name }}</view>
+      </mp-cell>
+    </mp-cells>
+
+    <mp-cells title="签到">
+      <label>
+        <mp-cell title="数字签到" ext-class="checkin-cell">
+          <input class="weui-input" placeholder="请输入签到码" type="number" maxlength="6" focus bind:input="onCheckinCodeInput" bind:confirm="checkin" />
+          <button slot="footer" class="weui-vcode-btn checkin-btn" hover-class="checkin-btn--hover" bind:tap="checkin">确认签到</button>
+        </mp-cell>
+      </label>
+    </mp-cells>
+
+    <mp-cells title="位置" footer="红色虚线包围的区域是教学区域，教师可以看到签到位置是否在教学区域。">
+      <view class="location-area">
+        <view class="location-area__map-container">
+          <map id="map" wx:if="{{ lat && lng }}" scale="18" latitude="{{ lat }}" longitude="{{ lng }}" markers="{{ [{ id: 0, latitude: lat, longitude: lng, iconPath: '/asset/ic_location_mark.png' }] }}" polyline="{{ teachingAreas }}"></map>
+          <view wx:else class="location-area__map-container__placeholder">暂无位置信息</view>
+        </view>
+        <button class="location-area__action" hover-class="location-area__action--hover" bind:tap="tryGetLocation" loading="{{ isGettingLocation }}">获取/刷新位置</button>
+      </view>
+    </mp-cells>
+
+    <mp-cells title="搭子圈" wx:if="{{ batches.length }}">
+      <mp-checkbox-group multi="{{ true }}" bind:change="onBatchesChanged">
+          <mp-checkbox wx:for="{{ batches }}" wx:key="_id" wx:for-item="batch" label="{{ batch.name }}" value="{{ batch._id }}" checked="{{ batch.selected }}" />
+        </mp-checkbox-group>
+    </mp-cells>
+  </mp-form>
+</view>

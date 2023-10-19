@@ -1,0 +1,47 @@
+.page {
+  box-sizing: border-box;
+  width: 100%;
+  flex: 1;
+  position: relative;
+  background-color: var(--weui-BG-0);
+}
+
+.weui-form-preview {
+  box-sizing: border-box;
+
+  & + & {
+    margin-top: 50rpx;
+  }
+}
+
+.weui-loadmore__tips {
+  background-color: var(--weui-BG-0) !important;
+}
+
+.course {
+  &:before {
+    position: relative;
+  }
+
+  &--this-week:before {
+    content: "● ";
+    color: var(--weui-BLUE);
+  }
+
+  &--today:before {
+    content: "● ";
+    color: var(--weui-BRAND);
+  }
+}
+
+.course-mark-tips {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 70%;
+  margin: 50rpx auto;
+  
+  .course {
+    line-height: 1;
+  }
+}
