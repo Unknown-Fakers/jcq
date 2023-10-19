@@ -32,7 +32,7 @@ exports.main = async (event, context) => {
 
     let batch
     try {
-      batch = await db.collection('batches').doc(id).get()
+      batch = await db.collection('batches').doc(event.id).get()
     } catch (err) {
       console.error(err)
     }
@@ -58,7 +58,7 @@ exports.main = async (event, context) => {
 
     // 删除搭子圈
     try {
-      await db.collection('batches').doc(id).remove()
+      await db.collection('batches').doc(event.id).remove()
     } catch (err) {
       console.error(err)
       ctx.body = { code: 1 }  // 搭子圈不存在
