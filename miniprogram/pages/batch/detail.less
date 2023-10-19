@@ -1,0 +1,38 @@
+.page {
+  box-sizing: border-box;
+  width: 100%;
+  flex: 1;
+  position: relative;
+  background-color: var(--weui-BG-0);
+}
+
+.attached-courses {
+  padding: 8px 16px;
+  background-color: var(--weui-BG-2);
+
+  .weui-list-tips {
+    padding-top: 8px;
+
+    &:before {
+      display: none;
+      content: none;
+    }
+  }
+
+  &__title {
+    margin: 8px 0;
+    font-size: 17px;
+  }
+}
+
+.button {
+  text-align: center;
+
+  &::before {
+    display: none !important;
+  }
+
+  &--danger {
+    color: var(--weui-RED);
+  }
+}

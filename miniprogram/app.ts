@@ -160,6 +160,8 @@ App({
         batch = await db.collection('batches').doc(member.batch_id).get()
       } catch { }
       if (batch) {
+        batch.data.no_default_select = member.no_default_select
+        batch.data.member_id = member._id
         batches.push(batch.data as Batch)
       }
     }
@@ -207,7 +209,7 @@ App({
   unWatchThemeChange(listener: Listener<Theme>) {
     const index = themeChangeListeners.indexOf(listener)
     if (index > -1) {
-      themeChangeListeners.splice(index)
+      themeChangeListeners.splice(index, 1)
     }
   },
 

@@ -10,29 +10,44 @@ const _ = db.command
 
 JcqPage({
   data: {
-    batches: [],
+    ownedBatches: [],
+    joinedBatches: [],
     isFirstLoad: true
   },
 
-  async onLoad(options: Record<string, string | undefined>) {
+  async onLoad(_options: Record<string, string | undefined>) {
     wx.showLoading({ title: '加载中' })
-    this.setData({ batches: await app.getUserBatches() })
+    await this.getAndProcessBatches()
     wx.hideLoading()
   },
 
-  async onShow() {
+  onShow() {
     if (this.data.isFirstLoad) {
       // 首次加载使用 onLoad 中的加载逻辑
       this.setData({ isFirstLoad: false })
     } else {
       // 后续重新回到本页面采用静默更新
-      this.setData({ batches: await app.getUserBatches() })
+      this.getAndProcessBatches()
     }
   },
 
   async onPullDownRefresh() {
-    this.setData({ batches: await app.getUserBatches(true) })
+    await this.getAndProcessBatches(true)
     wx.stopPullDownRefresh()
+  },
+
+  async getAndProcessBatches(refresh = false) {
+    const batches = await app.getUserBatches(refresh)
+    const ownedBatches = []
+    const joinedBatches = []
+    for (const batch of batches) {
+      if (batch._openid === app.globalData.openid) {
+        ownedBatches.push(batch)
+      } else {
+        joinedBatches.push(batch)
+      }
+    }
+    this.setData({ ownedBatches, joinedBatches })
   },
 
   /**

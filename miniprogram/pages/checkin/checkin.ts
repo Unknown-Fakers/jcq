@@ -183,12 +183,12 @@ JcqPage({
     const matchedBatches = (await app.getUserBatches())
       .filter((batch) => batch.courses.includes(this.data.course.number))
       .map((batch) => {
-        batch.selected = true
+        batch.selected = !batch.no_default_select
         return batch
       })
     this.setData({
       batches: matchedBatches,
-      'checkin.batches': matchedBatches.map((batch) => batch._id)
+      'checkin.batches': matchedBatches.filter(batch => batch.selected).map(batch => batch._id)
     })
   },
 

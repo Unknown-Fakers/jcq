@@ -73,8 +73,8 @@ JcqPage({
   },
 
   async confirmJoinBatch() {
+    wx.showLoading({ title: '请稍候', mask: true })
     const batchId = this.data.batch.value
-
     try {
       await db.collection('batch_members').add({
         data: { batch_id: batchId }
@@ -86,6 +86,8 @@ JcqPage({
       wx.navigateBack()
     } catch (err) {
       this.setData({ error: '你已加入该搭子圈' })
+    } finally {
+      wx.hideLoading()
     }
   }
 })

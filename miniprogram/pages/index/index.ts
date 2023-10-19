@@ -28,7 +28,7 @@ JcqPage({
       for (let i = course.detail.length - 1; i >= 0; i--) {
         if (course.detail[i].trim() === '未安排') {
           // 删除“未安排”
-          course.detail.splice(i)
+          course.detail.splice(i, 1)
         } else {
           // 简化日程安排文本
           course.detail[i] = course.detail[i].replace('[第', '[').replace('周-第', '-').replace(']星期', ']周')

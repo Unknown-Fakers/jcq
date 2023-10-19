@@ -1,0 +1,27 @@
+<view class="page" data-weui-theme="{{ theme }}">
+  <view class="attached-courses">
+    <view class="attached-courses__title">关联课程</view>
+    <view class="weui-list-tips">
+      <view class="weui-list-tips__item" wx:for="{{ courses }}" wx:key="index">{{ item }}</view>
+    </view>
+  </view>
+
+  <mp-cells>
+    <mp-cell title="搭子圈名称" footer="{{ name }}" />
+    <mp-cell title="成员数">
+      <view wx:if="{{ membersCount }}" slot="footer">{{ membersCount }}</view>
+      <view wx:else slot="footer" class="weui-loading" />
+    </mp-cell>
+  </mp-cells>
+
+  <mp-cells>
+    <mp-cell ext-class="weui-cell_switch" title="签到时默认勾选">
+      <switch slot="footer" checked="{{ selectByDefault }}" bind:change="onDefaultSelectChanged" />
+    </mp-cell>
+  </mp-cells>
+
+  <mp-cells>
+    <mp-cell wx:if="{{ own }}" value="解散搭子圈" ext-class="button button--danger" hover bind:tap="delete" />
+    <mp-cell wx:else value="退出搭子圈" ext-class="button button--danger" hover bind:tap="quit" />
+  </mp-cells>
+</view>

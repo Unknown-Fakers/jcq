@@ -26,9 +26,15 @@
     </view>
   </view>
 
-  <mp-cells wx:if="{{ batches.length }}" title="我加入的搭子圈">
-    <swipe-cell wx:for="{{ batches }}" wx:key="_id" bind:delete="quit" data-batch-id="{{ item._id }}" data-index="{{ index }}">
-      <mp-cell value="{{ item.name }}" />
-    </swipe-cell>
+  <mp-cells wx:if="{{ ownedBatches.length }}" title="我创建的搭子圈">
+    <navigator wx:for="{{ ownedBatches }}" wx:key="_id" wx:for-item="batch" hover-class="weui-cell_active weui-active" url="detail?id={{ batch._id }}">
+      <mp-cell value="{{ batch.name }}" />
+    </navigator>
+  </mp-cells>
+
+  <mp-cells wx:if="{{ joinedBatches.length }}" title="我加入的搭子圈">
+    <navigator wx:for="{{ joinedBatches }}" wx:key="_id" wx:for-item="batch" hover-class="weui-cell_active weui-active" url="detail?id={{ batch._id }}">
+      <mp-cell value="{{ batch.name }}" />
+    </navigator>
   </mp-cells>
 </view>

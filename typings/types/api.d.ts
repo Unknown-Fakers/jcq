@@ -12,7 +12,7 @@ declare interface Course {
 
 declare interface Batch extends DB.IDocumentData {
   name: string
-  courses: number[]
+  courses: string[]
 }
 
 declare interface User extends DB.IDocumentData {

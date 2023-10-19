@@ -1,6 +1,7 @@
 .page {
+  box-sizing: border-box;
   width: 100%;
-  height: 100%;
+  flex: 1;
   position: relative;
 }
 
@@ -12,8 +13,9 @@
 
 .batch-detail-container {
   width: 100%;
+  height: calc(100% - 10px);
   position: absolute;
-  top: 0;
+  top: 10px;
 
   .course-name {
     text-align: start;

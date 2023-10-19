@@ -9,7 +9,8 @@
     "pages/batch/join",
     "pages/batch/create",
     "pages/checkin/checkin",
-    "pages/checkin/result"
+    "pages/checkin/result",
+    "pages/batch/detail"
   ],
   "tabBar": {
     "list": [
