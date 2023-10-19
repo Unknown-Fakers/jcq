@@ -220,7 +220,7 @@ exports.main = async (event, context) => {
 
     // 签到失败，-1 和 0 是随机数无效，-2 是设备中有多个登录信息
     if (result === '-2' || result === '-1' || result === '0') {
-      ctx.body = { code: 1, data: result }
+      ctx.body = { code: 2, data: result }
       return
     }
 

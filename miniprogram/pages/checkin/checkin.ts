@@ -221,6 +221,8 @@ JcqPage({
       case -1:
         return '解析 iCQ 服务器响应失败'
       case 1:
+        return '未绑定学号信息'
+      case 2:
         return '签到码无效'
       default:
         return '未知 API 错误'
