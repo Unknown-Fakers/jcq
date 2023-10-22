@@ -51,7 +51,7 @@ exports.main = async (event, context) => {
   })
 
   // 检查是否完善了学号信息
-  app.router(['courses/mine', 'checkin'], async (ctx, next) => {
+  app.router(['courses/mine', 'checkin', 'records'], async (ctx, next) => {
     const studentNumber = ctx.user.student_number
     if (studentNumber && studentNumber.length) {
       await next()
@@ -293,6 +293,50 @@ exports.main = async (event, context) => {
     }
 
     ctx.body = { code: 0, data: { succeed: students.length - failed.length + 1, failed } }
+  })
+
+  app.router('records', async (ctx) => {
+    const { course } = event
+    const response = await fetch(`https://icq.cqust.edu.cn/interface/stumentioninfor.action?cnum=${course}&person_uname=${ctx.user.student_number}`)
+
+    try {
+      ctx.records = await response.json()
+    } catch (err) {
+      // console.error(err)
+      ctx.body = { code: -1 }  // 解析服务器响应失败
+    }
+    if (ctx.records) {
+      let records = ctx.records
+
+      for (const record of records) {
+        // record.operation_type = 0  // 0 未操作，1 教师操作，2 自主操作
+        record.operation_type = '未操作'
+        if (record.infor_location === '教师操作') {
+          console.log('教师操作判断')
+          record.operation_type = '教师操作'
+        }
+        else if (record.infor_type == '0') {
+          record.operation_type = '自主操作'
+        }
+        if (record.infor_key === '') {
+          record.infor_key = '未上传地理位置'
+        }
+      }
+
+      ctx.body = {
+        code: 0,
+        data: records.map((record) => {
+          return {
+            location: record.infor_key.replace(/\[|\]/g, ''),
+            time: record.infor_time,
+            status: Number(record.infor_type),
+            operation_type: record.operation_type
+          }
+        })
+      }
+    } else {
+      ctx.body = { code: 999 }  // 未知错误
+    }
   })
 
   return app.serve()

@@ -10,7 +10,9 @@
     "pages/batch/create",
     "pages/checkin/checkin",
     "pages/checkin/result",
-    "pages/batch/detail"
+    "pages/batch/detail",
+    "pages/checkin/record",
+    "pages/checkin/detail"
   ],
   "tabBar": {
     "list": [

@@ -45,8 +45,9 @@ JcqPage({
     this.setData({ indices, courses: map })
   },
 
-  selectCheckinTeacher(e: WechatMiniprogram.TouchEvent) {
+  selectTeacher(e: WechatMiniprogram.TouchEvent) {
     const number: string | undefined = e.target.dataset.courseNumber
+    const url: string | undefined = e.target.dataset.url
     if (!number || !number.length) return
 
     wx.showActionSheet({
@@ -54,13 +55,9 @@ JcqPage({
       itemList: this.data.courses[number].map((course: Course) => course.teacher.name),
       success: (res) => {
         wx.navigateTo({
-          url: '/pages/checkin/checkin?id=' + this.data.courses[number][res.tapIndex].id
+          url: '/pages/checkin/'+ url+'?id=' + this.data.courses[number][res.tapIndex].id
         })
       }
     })
   },
-
-  queryCheckinRecords() {
-    wx.showToast({ icon: 'error', title: '暂未实现' })
-  }
 })

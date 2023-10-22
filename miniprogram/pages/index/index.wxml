@@ -24,9 +24,10 @@
       </view>
     </view>
     <view class="weui-form-preview__ft">
-      <view class="weui-form-preview__btn weui-form-preview__btn_default" hover-class="weui-form-preview__btn_active" bind:tap="queryCheckinRecords">出勤查询</view>
+      <navigator wx:if="{{ courses[idx].length === 1 }}" class="weui-form-preview__btn weui-form-preview__btn_default" hover-class="weui-form-preview__btn_active" url="/pages/checkin/record?id={{ courses[idx][0].id }}">出勤查询</navigator>
+      <view wx:else class="weui-form-preview__btn weui-form-preview__btn_default" hover-class="weui-form-preview__btn_active" bind:tap="selectTeacher" data-url= "record"data-course-number="{{ idx }}">出勤查询</view>
       <navigator wx:if="{{ courses[idx].length === 1 }}" class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active" url="/pages/checkin/checkin?id={{ courses[idx][0].id }}">签到</navigator>
-      <view wx:else class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active" bind:tap="selectCheckinTeacher" data-course-number="{{ idx }}">签到</view>
+      <view wx:else class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active" bind:tap="selectTeacher" data-url= "checkin"data-course-number="{{ idx }}">签到</view>
     </view>
   </view>
 

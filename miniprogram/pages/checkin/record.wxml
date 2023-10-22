@@ -1,0 +1,57 @@
+<view class="page" data-weui-theme="{{ theme }}">
+  <view class="weui-cells__title"> </view>
+  <view class="weui-form-preview" wx:for="{{records}}" wx:for-item="record" wx:key="idx">
+    <view class="weui-form-preview__hd">
+      <view class="weui-form-preview__item">
+        <label class="weui-form-preview__label checkin-result__tittle" >签到结果</label>
+        <view class="checkin-result">
+          <view wx:if="{{record.status === 0}}" class="checkin-result__image">
+            <image src="/asset/checkin-attendance.png" />
+            <text class="checkin-result__text">出勤</text>
+          </view>
+          <view wx:if="{{record.status === -1}}" class="checkin-result__image">
+            <image src="/asset/checkin-absence.png" />
+            <text class="checkin-result__text">缺勤</text>
+          </view>
+          <view wx:if="{{record.status === 2}}" class="checkin-result__image">
+            <image src="/asset/checkin-leave.png" />
+            <text class="checkin-result__text">请假</text>
+          </view>
+        </view>
+      </view>
+    </view>  
+    <view class="weui-form-preview__bd">
+      <view class="weui-form-preview__item">
+        <label class="weui-form-preview__label">签到时间</label>
+        <view class="weui-form-preview__value">{{record.time}}</view>
+      </view>
+      <view class="weui-form-preview__item">
+        <label class="weui-form-preview__label">签到课程</label>
+        <view class="weui-form-preview__value">{{Course.name}}</view>
+      </view>
+      <view class="weui-form-preview__item">
+        <label class="weui-form-preview__label">授课教师</label>
+        <view class="weui-form-preview__value">{{Course.teacher.name}}</view>
+      </view>
+      <view class="weui-form-preview__item">
+        <label class="weui-form-preview__label">签到地点</label>
+        <view class="weui-form-preview__value">{{record.location}}</view>
+      </view>
+      <view class="weui-form-preview__item">
+        <label class="weui-form-preview__label">操作类型</label>
+        <view class="weui-form-preview__value">{{record.operation_type}}</view>
+      </view>
+    </view>
+    <view class="weui-form-preview__ft">
+      <view class="weui-form-preview__btn weui-form-preview__btn_default">更多签到记录</view>
+      <view class="weui-form-preview__btn weui-form-preview__btn_primary">定位详情</view>
+    </view>
+  </view>
+  <view class="weui-loadmore weui-loadmore_line" wx:if="{{ !records.length }}">
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无数据</view>
+  </view>
+  <view class="weui-loadmore weui-loadmore_line weui-loadmore_dot" wx:else>
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line weui-loadmore__tips_in-dot"></view>
+  </view>
+
+</view>
