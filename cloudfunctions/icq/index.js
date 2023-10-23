@@ -228,9 +228,11 @@ exports.main = async (event, context) => {
     if (!batches || !batches.length) {
       if (geo && geo.lat && geo.lng) {
         // 对于位置信息的返回结果，不做检查
-        await fetch(`https://icq.cqust.edu.cn/interface/updatelocationbyxh.action?cnum=${course}&xh=${ctx.user.student_number}&location=纬度:${geo.lat}经度:${geo.lng}`, {
-          headers: { 'Content-Type': 'application/json' }
-        })
+        try {
+          await fetch(`https://icq.cqust.edu.cn/interface/updatelocationbyxh.action?cnum=${course}&xh=${ctx.user.student_number}&location=纬度:${geo.lat}经度:${geo.lng}`, {
+            headers: { 'Content-Type': 'application/json' }
+          })
+        } catch { /* ignore */ }
       }
       ctx.body = { code: 0, data: { succeed: 1, failed: [] } }
       return
@@ -267,18 +269,18 @@ exports.main = async (event, context) => {
       // 有位置信息，为所有同学补充上传位置，并且统计失败信息
       const locationUpdates = [new Promise(resolve => {
         fetch(`https://icq.cqust.edu.cn/interface/updatelocationbyxh.action?cnum=${course}&xh=${ctx.user.student_number}&location=纬度:${geo.lat}经度:${geo.lng}`, {
-          headers: { 'Content-Type': 'application/json' } 
-        }).then(() => resolve())
+          headers: { 'Content-Type': 'application/json' }
+        }).then(() => resolve()).catch(() => { /* ignore */ })
       })]
       for (let i = 0; i < allResults.length; i++) {
         if (allResults[i] === '-2' || allResults[i] === '-1' || allResults[i] === '0') {
           failed.push({ student_number: students[i].student_number, code: allResults[i] })
         } else {
           const g = addRandomOffsetApproximately(geo, 5)
-          locationUpdates.push(new Promise(resolve => {  
+          locationUpdates.push(new Promise(resolve => {
             fetch(`https://icq.cqust.edu.cn/interface/updatelocationbyxh.action?cnum=${course}&xh=${students[i].student_number}&location=纬度:${g.lat}经度:${g.lng}`, {
               headers: { 'Content-Type': 'application/json' }
-            }).then(() => resolve())
+            }).then(() => resolve()).catch(() => { /* ignore */ })
           }))
         }
       }
