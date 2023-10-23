@@ -12,7 +12,9 @@
     "pages/checkin/result",
     "pages/batch/detail",
     "pages/checkin/record",
-    "pages/checkin/detail"
+    "pages/checkin/detail",
+    "pages/settings/settings",
+    "pages/settings/selector"
   ],
   "tabBar": {
     "list": [
