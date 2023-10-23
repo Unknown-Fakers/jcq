@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-fetch": "^2.7.0",
+    "make-fetch-happen": "^13.0.0",
     "tcb-router": "^1.1.2",
     "wx-server-sdk": "~2.6.3"
   },

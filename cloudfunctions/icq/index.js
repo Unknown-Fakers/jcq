@@ -1,6 +1,8 @@
 const cloud = require('wx-server-sdk')
 const TcbRouter = require('tcb-router')
-const fetch = require('node-fetch')
+const fetch = require('make-fetch-happen')
+
+require('events').EventEmitter.defaultMaxListeners = 100
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
@@ -299,27 +301,58 @@ exports.main = async (event, context) => {
 
   app.router('records', async (ctx) => {
     const { course } = event
-    const response = await fetch(`https://icq.cqust.edu.cn/interface/stumentioninfor.action?cnum=${course}&person_uname=${ctx.user.student_number}`)
+    const [checkinResponse, attendanceInfoResponse] = await Promise.all([
+      fetch(`http://icq.cqust.edu.cn/interface/stumentioninfor.action?cnum=${course}&person_uname=${ctx.user.student_number}`),
+      fetch(`http://icq.cqust.edu.cn/interface/mentioncountinfor.action?cnum=${course}`)
+    ])
     try {
-      ctx.records = await response.json()
+      ctx.records = await checkinResponse.json()
+      ctx.attendanceInfo = await attendanceInfoResponse.json()
     } catch (err) {
-      // console.error(err)
+      console.error(err)
       ctx.body = { code: -1 }  // 解析服务器响应失败
     }
-    if (ctx.records) {
-      let records = ctx.records
 
-      for (const record of records) {
-        record.operation_type = 0  // 0 未操作，1 教师操作，2 自主操作
-        if (record.infor_location === '教师操作') {
-          console.log('教师操作判断')
-          record.operation_type = 1
+    if (ctx.records && ctx.attendanceInfo) {
+      const { records, attendanceInfo } = ctx
+      // console.log(records)
+      // console.log(attendanceInfo)
+      for (let i = 0; i < records.length; i++) {
+        if (records.length !== attendanceInfo.length) {
+          ctx.body = { code: 999 }  // 未知错误
         }
-        else if (record.infor_type == '0') {
-          record.operation_type = 2
+
+        // 为每条记录添加出勤信息
+        records[i].attendanceInfo = {}
+        const attendanceMatch = attendanceInfo[i].mentionInfo.match(/出勤(\d+)人\/迟到(\d+)人\/请假(\d+)人\/缺勤(\d+)人/);
+        records[i].attendanceInfo.total = Number(attendanceMatch[1]) + Number(attendanceMatch[2]) + Number(attendanceMatch[3]) + Number(attendanceMatch[4])
+        records[i].attendanceInfo.attended = Number(attendanceMatch[1])
+        records[i].attendanceInfo.late = Number(attendanceMatch[2])
+        records[i].attendanceInfo.leave = Number(attendanceMatch[3])
+        records[i].attendanceInfo.absent = Number(attendanceMatch[4])
+
+        records[i].operation_type = 0  // 0 未操作，1 教师操作，2 自主操作
+        if (records[i].infor_location === '教师操作') {
+          records[i].operation_type = 1
         }
-        if (record.infor_key === '') {
-          record.infor_key = '未上传地理位置'
+        else if (records[i].infor_type == '0') {
+          records[i].operation_type = 2
+        }
+
+        // 为每条记录添加地理位置信息
+        records[i].location = {}
+        if (records[i].infor_location.includes('纬度')) {
+        records[i].location.area = records[i].infor_key.replace(/\[|\]/g, '')
+        const locationStr = records[i].infor_location
+        const latMatch = locationStr.match(/纬度:(\d+\.\d+)/)
+        const lngMatch = locationStr.match(/经度:(\d+\.\d+)/)
+        records[i].location.lat = Number(latMatch[1])
+        records[i].location.lng = Number(lngMatch[1])
+        }
+        else {
+          records[i].location.area = "未上传地理位置"
+          records[i].location.lat = 0
+          records[i].location.lng = 0
         }
       }
 
@@ -327,10 +360,16 @@ exports.main = async (event, context) => {
         code: 0,
         data: records.map((record) => {
           return {
-            location: record.infor_key.replace(/\[|\]/g, ''),
+            // location: record.infor_key.replace(/\[|\]/g, ''),
             time: record.infor_time,
             status: Number(record.infor_type),
-            operation_type: record.operation_type
+            operation_type: record.operation_type,
+            location: {
+              ...record.location
+            },
+            attendance_info: {
+              ...record.attendanceInfo
+            }
           }
         })
       }
