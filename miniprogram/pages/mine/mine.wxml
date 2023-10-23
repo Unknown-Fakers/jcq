@@ -4,6 +4,12 @@
   </view>
 
   <mp-cells>
+    <navigator hover-class="none" url="/pages/settings/settings">
+      <mp-cell value="设置" link />
+    </navigator>
+  </mp-cells>
+
+  <mp-cells>
     <mp-cell ext-class="button button--danger" value="解绑学号" hover bind:tap="unbind" />
   </mp-cells>
 </view>

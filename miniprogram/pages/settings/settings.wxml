@@ -1,0 +1,14 @@
+<view class="page" data-weui-theme="{{ theme }}">
+  <mp-cells title="签到">
+    <mp-cell ext-class="weui-cell_switch cell-desc-with-footer">
+      <text>自动获取位置信息</text>
+      <view class="weui-cell__desc">开启后，在签到页面会自动获取位置。如果您的设备性能较低，关闭此项可以提升体验。</view>
+      <switch slot="footer" checked="{{ autoLocateWhenCheckin }}" bind:change="onAutoLocateChanged" />
+    </mp-cell>
+    <mp-cell>
+      <text>原神，启动！</text>
+      <view class="weui-cell__desc">签到完成后自动为您启动原神。</view>
+      <switch slot="footer" checked disabled />
+    </mp-cell>
+  </mp-cells>
+</view>

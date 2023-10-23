@@ -9,6 +9,8 @@ JcqPage({
     course: undefined as Course | undefined,
     batches: [] as Batch[],
 
+    autoFocus: true,
+
     checkin: {
       course: '',
       teacher: '',
@@ -121,11 +123,17 @@ JcqPage({
       this.showDataMissingTipAndNavigateBack()
       return
     }
-    this.setData({ course, 'checkin.course': course.number, 'checkin.teacher': course.teacher.number })
+    this.setData({
+      course,
+      'checkin.course': course.number, 'checkin.teacher': course.teacher.number,
+      autoFocus: app.settings.autoLocateWhenCheckin  // 没有自动获取位置就不要自动弹出键盘了
+    })
 
     // 异步获取其余信息
     this.getRelativeBatches()
-    this.tryGetLocation()
+    if (app.settings.autoLocateWhenCheckin) {
+      this.tryGetLocation()
+    }
   },
 
   tryGetLocation() {

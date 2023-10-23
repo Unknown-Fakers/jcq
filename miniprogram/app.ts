@@ -15,6 +15,10 @@ App({
     _cloud: null
   },
 
+  settings: {
+    autoLocateWhenCheckin: true
+  },
+
   async onLaunch() {
     this._registerAppUpdateEvent()
     this._registerNetworkEvents()

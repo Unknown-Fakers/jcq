@@ -13,7 +13,7 @@
     <mp-cells title="签到">
       <label>
         <mp-cell title="数字签到" ext-class="checkin-cell">
-          <input class="weui-input" placeholder="请输入签到码" type="number" maxlength="6" focus bind:input="onCheckinCodeInput" bind:confirm="checkin" />
+          <input class="weui-input" placeholder="请输入签到码" type="number" maxlength="6" focus="{{ autoFocus }}" bind:input="onCheckinCodeInput" bind:confirm="checkin" />
           <button slot="footer" class="weui-vcode-btn checkin-btn" hover-class="checkin-btn--hover" bind:tap="checkin">确认签到</button>
         </mp-cell>
       </label>

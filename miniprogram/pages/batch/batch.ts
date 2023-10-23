@@ -38,6 +38,8 @@ JcqPage({
 
   async getAndProcessBatches(refresh = false) {
     const batches = await app.getUserBatches(refresh)
+    if (!batches || !batches.length) return
+
     const ownedBatches = []
     const joinedBatches = []
     for (const batch of batches) {

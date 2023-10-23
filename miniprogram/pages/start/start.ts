@@ -6,6 +6,8 @@ Page({
   async onLoad() {
     app.onThemeChange({ theme: wx.getAppBaseInfo().theme ?? 'light' })
 
+    this.loadLocalSettings()
+
     const isStudentNumberBound = await this.fetchUserDetail()
     if (isStudentNumberBound) {
       wx.switchTab({ url: '/pages/index/index' })
@@ -42,5 +44,15 @@ Page({
       return false
     }
     return true
+  },
+
+  loadLocalSettings() {
+    wx.batchGetStorage({
+      keyList: ['no_auto_locate_when_checkin'],
+      success(res) {
+        const data: any[] = (res as any).dataList
+        app.settings.autoLocateWhenCheckin = !data[0]
+      }
+    })
   }
 })

@@ -1,0 +1,7 @@
+<view class="page" data-weui-theme="{{ theme }}">
+  <mp-cells ext-class="cells--no-title" footer="{{ description }}">
+    <mp-checkbox-group multi="{{ false }}" bind:change="onItemSelected">
+      <mp-checkbox wx:for="{{ items }}" wx:key="index" label="{{ item }}" value="{{ index }}" checked="{{ index === selected }}" />
+    </mp-checkbox-group>
+  </mp-cells>
+</view>
