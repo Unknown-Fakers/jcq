@@ -5,16 +5,28 @@
       <view class="weui-form-preview__item">
         <label class="weui-form-preview__label checkin-result__tittle" >签到结果</label>
         <view class="checkin-result">
-          <view wx:if="{{record.status === 0}}" class="checkin-result__image">
-            <image src="/asset/checkin-attendance.png" />
+          <view wx:if="{{record.status === 0}}" class="checkin-result__icon">
+            <icon type="success" size="40"></icon>
             <text class="checkin-result__text">出勤</text>
           </view>
-          <view wx:if="{{record.status === -1}}" class="checkin-result__image">
-            <image src="/asset/checkin-absence.png" />
+          <view wx:if="{{record.status === 555}}" class="checkin-result__icon">
+            <icon type="success" size="40" color="#c9c9c9"></icon>
+            <text class="checkin-result__text">被迫出勤</text>
+          </view>
+          <view wx:if="{{record.status === 110}}" class="checkin-result__icon">
+            <icon type="warn" size="40" color="##fa5151"></icon>
+            <text class="checkin-result__text">旷课被抓</text>
+          </view>
+          <view wx:if="{{record.status === -1}}" class="checkin-result__icon">
+            <icon type="warn" size="40" color="#ffc300"></icon>
             <text class="checkin-result__text">缺勤</text>
           </view>
-          <view wx:if="{{record.status === 2}}" class="checkin-result__image">
-            <image src="/asset/checkin-leave.png" />
+          <view wx:if="{{record.status === 1}}" class="checkin-result__icon">
+            <icon type="waiting" size="40"></icon>
+            <text class="checkin-result__text">迟到</text>
+          </view>
+          <view wx:if="{{record.status === 2}}" class="checkin-result__icon">
+            <icon type="info" size="40"></icon>
             <text class="checkin-result__text">请假</text>
           </view>
         </view>
