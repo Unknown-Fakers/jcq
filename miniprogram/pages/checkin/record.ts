@@ -73,7 +73,7 @@ JcqPage({
             recordsData[i].operation_type = '自主操作'
             break
           default:
-            recordsData[i].operation_type = '未操作'
+            recordsData[i].operation_type = '未知操作'
         }
       }
       this.setData({ records: result.data, courseName: result.code })
