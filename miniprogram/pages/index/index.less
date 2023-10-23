@@ -9,7 +9,7 @@
 .weui-form-preview {
   box-sizing: border-box;
 
-  & + & {
+  &+& {
     margin-top: 50rpx;
   }
 }
@@ -19,16 +19,16 @@
 }
 
 .course {
-  &:before {
+  &::before {
     position: relative;
   }
 
-  &--this-week:before {
+  &--this-week::before {
     content: "● ";
     color: var(--weui-BLUE);
   }
 
-  &--today:before {
+  &--today::before {
     content: "● ";
     color: var(--weui-BRAND);
   }
@@ -40,7 +40,7 @@
   justify-content: space-between;
   width: 70%;
   margin: 50rpx auto;
-  
+
   .course {
     line-height: 1;
   }

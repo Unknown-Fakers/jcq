@@ -13,20 +13,20 @@
         <view class="weui-form-preview__label">教师</view>
         <view class="weui-form-preview__value" wx:if="{{ courses[idx].length === 1 }}">{{ courses[idx][0].teacher.name }}</view>
         <view class="weui-form-preview__value" wx:else>
-          <text wx:for="{{ courses[idx] }}" wx:key="teacher">{{ index === 0 ? '' : '、' }}{{ item.teacher.name }}</text>
+          <text wx:for="{{ courses[idx] }}" wx:key="index">{{ index === 0 ? '' : '、' }}{{ item.teacher.name }}</text>
         </view>
       </view>
       <view class="weui-form-preview__item" wx:if="{{ courses[idx][0].detail && courses[idx][0].detail.length }}">
         <view class="weui-form-preview__label">日程安排</view>
         <view class="weui-form-preview__value">
-          <text wx:for="{{ courses[idx][0].detail }}" wx:key="index" class="course {{ (courses[idx][0].in_this_week && courses[idx][0].in_this_week[index] ? 'course--this-week ' : '') + (courses[idx][0].today && courses[idx][0].today[index] ? 'course--today ' : '') }}">{{ item }}\n</text>
+          <view wx:for="{{ courses[idx][0].detail }}" wx:key="index" class="course {{ (courses[idx][0].in_this_week && courses[idx][0].in_this_week[index] ? 'course--this-week ' : '') + (courses[idx][0].today && courses[idx][0].today[index] ? 'course--today ' : '') }}">{{ item }}</view>
         </view>
       </view>
     </view>
     <view class="weui-form-preview__ft">
       <navigator class="weui-form-preview__btn weui-form-preview__btn_default" hover-class="weui-form-preview__btn_active" url="/pages/checkin/record?id={{ courses[idx][0].id }}">出勤查询</navigator>
       <navigator wx:if="{{ courses[idx].length === 1 }}" class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active" url="/pages/checkin/checkin?id={{ courses[idx][0].id }}">签到</navigator>
-      <view wx:else class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active" bind:tap="selectTeacher" data-url= "checkin"data-course-number="{{ idx }}">签到</view>
+      <view wx:else class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active" bind:tap="selectTeacher" data-course-number="{{ idx }}">签到</view>
     </view>
   </view>
 
