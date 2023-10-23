@@ -40,21 +40,44 @@ JcqPage({
         }
       })).result as ApiResponse<CheckinResult>
     } catch (err) {
-      wx.showToast({ icon: 'error', title: '获取失败'})
+      wx.showToast({ icon: 'error', title: '获取失败' })
       return
     } finally {
       wx.hideLoading();
     }
-    const recordsData = result?.data
+    const recordsData: any[] = (result?.data as unknown as any[])?.reverse()
     if (result?.code !== 0) {
       wx.showToast({ icon: 'error', title: '服务器未响应' })
       return
     } else if (result?.code === 0 && !recordsData?.length) {
-      wx.showToast({ icon: 'error', title: '暂无签到记录'})
-      return
+      wx.showToast({ icon: 'error', title: '暂无签到记录' })
     } else {
+      for (let i = 0; i < recordsData.length; i++) {
+        switch (recordsData[i].operation_type) {
+          case 0:
+            recordsData[i].operation_type = '未操作'
+            break
+          case 1:
+            recordsData[i].operation_type = '教师操作'
+            if(recordsData[i].status === -1){
+               recordsData[i].status = 110
+               recordsData[i].operation_type = '无效签到（签了被强行改）'
+            }
+            if(recordsData[i].status === 0){
+              recordsData[i].status = 555
+              recordsData[i].operation_type = '旷课未遂'
+           }
+
+            break
+          case 2:
+            recordsData[i].operation_type = '自主操作'
+            break
+          default:
+            recordsData[i].operation_type = '未操作'
+        }
+      }
       this.setData({ records: result.data, courseName: result.code })
       console.log(this.data.records)
     }
-  },
+  }
 })

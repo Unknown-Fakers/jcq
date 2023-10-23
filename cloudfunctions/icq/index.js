@@ -298,7 +298,6 @@ exports.main = async (event, context) => {
   app.router('records', async (ctx) => {
     const { course } = event
     const response = await fetch(`https://icq.cqust.edu.cn/interface/stumentioninfor.action?cnum=${course}&person_uname=${ctx.user.student_number}`)
-
     try {
       ctx.records = await response.json()
     } catch (err) {
@@ -309,14 +308,13 @@ exports.main = async (event, context) => {
       let records = ctx.records
 
       for (const record of records) {
-        // record.operation_type = 0  // 0 未操作，1 教师操作，2 自主操作
-        record.operation_type = '未操作'
+        record.operation_type = 0  // 0 未操作，1 教师操作，2 自主操作
         if (record.infor_location === '教师操作') {
           console.log('教师操作判断')
-          record.operation_type = '教师操作'
+          record.operation_type = 1
         }
         else if (record.infor_type == '0') {
-          record.operation_type = '自主操作'
+          record.operation_type = 2
         }
         if (record.infor_key === '') {
           record.infor_key = '未上传地理位置'
