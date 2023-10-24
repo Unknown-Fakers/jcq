@@ -19,10 +19,18 @@ App({
     autoLocateWhenCheckin: true
   },
 
+  _userDetailFetchPromise: undefined as Promise<void> | undefined,
+
   async onLaunch() {
     this._registerAppUpdateEvent()
     this._registerNetworkEvents()
-    this._initCloud()
+    this._loadLocalSettings()
+    await this._initCloud()
+
+    this._userDetailFetchPromise = this._fetchUserDetail()
+    await this._userDetailFetchPromise
+
+    this.onThemeChange({ theme: wx.getAppBaseInfo().theme ?? 'light' })
   },
 
   /**
@@ -141,9 +149,74 @@ App({
     })
   },
 
+  async _fetchUserDetail() {
+    // 尝试从缓存中读取用户信息
+    let [openid, user] = wx.batchGetStorageSync(['openid', 'user'])
+    if (openid && user) {
+      this.globalData.openid = openid
+      this.globalData.user = user
+      return
+    }
+
+    const cloud = (this as any).cloud() as WxCloud
+    if (!openid) {
+      const response = await cloud.callFunction({
+        name: 'registe',
+        data: {
+          $url: 'get-id'
+        }
+      })
+      const result = response.result as ApiResponse<string> | undefined
+      if (result?.code === 0) {
+        openid = this.globalData.openid = result.data!
+        wx.setStorageSync('openid', result.data)
+      } else {
+        throw new Error('获取 openid 失败')
+      }
+    }
+
+    if (!user) {
+      const userRecord = await cloud.database().collection('users').where({ _openid: openid }).get()
+      if (userRecord.data.length === 0) {
+        // 用户没有注册，为了防止数据库权限导致的自己无法读取个人信息的问题，必须由自己创建记录
+        const newUser = await cloud.database().collection('users').add({ data: {} })
+        user = this.globalData.user = { _id: newUser._id, _openid: openid }
+      } else {
+        user = this.globalData.user = userRecord.data[0]
+      }
+      wx.setStorageSync('user', user)
+    }
+  },
+
+  /**
+   * 获取学号，如果用户没有绑定学号，则跳转到注册页面，返回空字符串。
+   */
+  async _getUserStudentNumber() {
+    await this._userDetailFetchPromise
+
+    const user = this.globalData.user
+    if (!user || !user.student_number || user.student_number.length !== 10) {
+      wx.redirectTo({ url: '/pages/register/register' })
+      return ''
+    }
+    return user.student_number
+  },
+
+  _loadLocalSettings() {
+    wx.batchGetStorage({
+      keyList: ['no_auto_locate_when_checkin'],
+      success: (res) => {
+        const data: any[] = (res as any).dataList
+        this.settings.autoLocateWhenCheckin = !data[0]
+      }
+    })
+  },
+
   async _fetchUserBatches() {
+    await this._userDetailFetchPromise
+
     const openid = this.globalData.openid
-    if (!openid.length) return
+    if (!openid) return
 
     // @ts-ignore
     const db = this.cloud().database()
@@ -181,7 +254,7 @@ App({
   },
 
   async _fetchUserCourses() {
-    const studentNumber = this.globalData.user.student_number
+    const studentNumber = await this._getUserStudentNumber()
     if (!studentNumber || studentNumber.length !== 10) return
 
     // @ts-ignore

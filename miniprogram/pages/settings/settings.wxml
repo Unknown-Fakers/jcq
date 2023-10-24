@@ -11,4 +11,8 @@
       <switch slot="footer" checked disabled />
     </mp-cell>
   </mp-cells>
+
+  <mp-cells>
+    <mp-cell ext-class="button" value="清除数据缓存" hover bind:tap="clearDataCache" />
+  </mp-cells>
 </view>

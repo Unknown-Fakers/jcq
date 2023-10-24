@@ -1,6 +1,5 @@
 {
   "pages": [
-    "pages/start/start",
     "pages/index/index",
     "pages/mine/mine",
     "pages/register/register",
@@ -26,7 +25,7 @@
       },
       {
         "pagePath": "pages/batch/batch",
-        "text": "上课搭子",
+        "text": "搭子圈",
         "iconPath": "/asset/tab_friend.png",
         "selectedIconPath": "/asset/tab_friend_selected.png"
       },

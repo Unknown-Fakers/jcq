@@ -4,5 +4,5 @@
     "mp-cell": "weui-miniprogram/cell/cell"
   },
   "enablePullDownRefresh": true,
-  "navigationBarTitleText": "我的搭子"
+  "navigationBarTitleText": "搭子圈"
 }

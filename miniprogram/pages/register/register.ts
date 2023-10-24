@@ -1,7 +1,7 @@
 import JcqPage from '../../base/JcqPage'
 
-const app = getApp()
-const cloud = app.cloud()
+const app = getApp<IAppOption>()
+const cloud = app.cloud!() as WxCloud
 const db = cloud.database()
 
 JcqPage({
@@ -19,21 +19,21 @@ JcqPage({
     error: ''
   },
 
-  onAgreementsChanged(e) {
-    this.setData({ agreed: e.detail.value.length !== 0 })
-  },
+  // onAgreementsChanged(e) {
+  //   this.setData({ agreed: e.detail.value.length !== 0 })
+  // },
 
   focusToStudentNumber() {
     this.setData({ isFocusToStudentNumber: true })
   },
 
-  onFormInput(e) {
+  onFormInput(e: WechatMiniprogram.Input) {
     const { field } = e.currentTarget.dataset
     this.setData({ [`student.${field}`]: e.detail.value })
   },
 
   submit() {
-    this.selectComponent('#form').validate((valid, errors) => {
+    this.selectComponent('#form').validate((valid: boolean, errors: Record<string, any>) => {
       if (valid) {
         wx.showLoading({
           title: '尝试绑定中',
@@ -47,9 +47,9 @@ JcqPage({
           }
         })
           .then((res) => {
-            switch (res.result.code) {
+            switch ((res.result as any).code) {
               case 0:
-                this.fetchUserDetailAndGotoIndex(res.result.data)
+                this.fetchUserDetailAndGotoIndex((res.result as any).data)
                 break
               case 2:
                 wx.showModal({
@@ -78,7 +78,7 @@ JcqPage({
     })
   },
 
-  fetchUserDetailAndGotoIndex(openid) {
+  fetchUserDetailAndGotoIndex(openid : string) {
     db.collection('users').where({ _openid: openid }).get()
       .then((res) => {
         if (res.data.length !== 0) {

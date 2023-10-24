@@ -21,5 +21,21 @@ JcqPage({
         app.settings.autoLocateWhenCheckin = e.detail.value
       }
     })
+  },
+
+  clearDataCache() {
+    wx.showModal({
+      title: '清除数据缓存',
+      content: '清除缓存后，小程序将重启。',
+      success: (res) => {
+        if (res.confirm) {
+          wx.clearStorage({
+            success: () => {
+              wx.restartMiniProgram({ path: '/pages/index/index' })
+            }
+          })
+        }
+      }
+    })
   }
 })
