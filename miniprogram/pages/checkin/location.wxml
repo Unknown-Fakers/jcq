@@ -1,0 +1,11 @@
+<view class="page" data-weui-theme="{{ theme }}">
+    <map wx:if="{{ location.lat && location.lng}}"
+      id="map" 
+      style="width: 100vw; height: 100vh;" 
+      scale="18" 
+      latitude="{{ location.lat }}" 
+      longitude="{{ location.lng }}" 
+      markers="{{ markers }}"
+      >
+    </map>
+</view>

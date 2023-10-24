@@ -1,5 +1,5 @@
 <view class="page" data-weui-theme="{{ theme }}">
-  <view class="weui-cells__title"> </view>
+  <view class="weui-cells__title"></view>
   <view class="weui-form-preview" wx:for="{{records}}" wx:for-item="record" wx:key="idx">
     <view class="weui-form-preview__hd">
       <view class="weui-form-preview__item">
@@ -38,8 +38,8 @@
         <view class="weui-form-preview__value">{{record.time}}</view>
       </view>
       <view class="weui-form-preview__item">
-        <label class="weui-form-preview__label">签到课程</label>
-        <view class="weui-form-preview__value">{{Course.name}}</view>
+        <label class="weui-form-preview__label">班级出勤</label>
+        <view class="weui-form-preview__value"> 出勤:{{record.attendance_info.attended}} | 迟到:{{record.attendance_info.late}} | 缺勤:{{record.attendance_info.absent}} | 请假:{{record.attendance_info.leave}}</view>
       </view>
       <view class="weui-form-preview__item">
         <label class="weui-form-preview__label">授课教师</label>
@@ -56,7 +56,7 @@
     </view>
     <view class="weui-form-preview__ft">
       <view class="weui-form-preview__btn weui-form-preview__btn_default">更多签到记录</view>
-      <view class="weui-form-preview__btn weui-form-preview__btn_primary">定位详情</view>
+      <view wx:if="{{record.location.area !== '未上传地理位置'}}" class="weui-form-preview__btn weui-form-preview__btn_primary" bind:tap="navigateToLocation" data-index="{{index}}">定位详情</view>
     </view>
   </view>
   <view class="weui-loadmore weui-loadmore_line" wx:if="{{ !records.length }}">
