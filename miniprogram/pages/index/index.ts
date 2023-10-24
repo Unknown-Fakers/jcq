@@ -5,12 +5,13 @@ const app = getApp<IAppOption>()
 JcqPage({
   data: {
     indices: [],
-    courses: {}
+    courses: {},
+
+    showSkeleton: true
   },
 
-  async onLoad(_options: Record<string, string | undefined>) {
-    // this.tryGetLocation()
-    wx.startPullDownRefresh()
+  onLoad(_options: Record<string, string | undefined>) {
+    this.fetchAndProcessCourses()
   },
 
   async onPullDownRefresh() {
@@ -42,7 +43,7 @@ JcqPage({
       }
       map[course.number].push(course)
     })
-    this.setData({ indices, courses: map })
+    this.setData({ indices, courses: map, showSkeleton: false })
   },
 
   selectTeacher(e: WechatMiniprogram.TouchEvent) {

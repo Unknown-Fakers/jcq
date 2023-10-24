@@ -1,7 +1,36 @@
 <view class="page" data-weui-theme="{{ theme }}">
   <view class="weui-form__tips-area">
-    <view class="weui-form__tips course-mark-tips"><text class="course course--today">今日课程</text><text class="course course--this-week">本周课程</text></view>
+    <view class="weui-form__tips course-mark-tips">
+      <text class="course course--today">今日课程</text>
+      <text class="course course--this-week">本周课程</text>
+    </view>
   </view>
+
+  <block wx:if="{{ showSkeleton }}">
+    <view class="weui-form-preview" wx:for="{{ 'jcq' }}" wx:key="index">
+      <view class="weui-form-preview__hd">
+        <view class="weui-form-preview__label"><skeleton height="20px" /></view>
+        <view class="weui-form-preview__value_in-hd"><skeleton width="10em" height="20px" /></view>
+      </view>
+      <view class="weui-form-preview__bd">
+        <view class="weui-form-preview__item">
+          <view class="weui-form-preview__label"><skeleton width="4.2em" height="16px" /></view>
+          <view class="weui-form-preview__value"><skeleton width="3em" height="16px" /></view>
+        </view>
+        <view class="weui-form-preview__item">
+          <view class="weui-form-preview__label"><skeleton width="4.2em" height="16px" /></view>
+          <view class="weui-form-preview__value">
+            <view><skeleton width="16em" height="16px" skeleton-space="0" /></view>
+            <view><skeleton width="16em" height="16px" skeleton-space="0" /></view>
+          </view>
+        </view>
+      </view>
+      <view class="weui-form-preview__ft">
+        <view class="weui-form-preview__skeleton-btn"><skeleton variant="rect" width="6em" height="20px" /></view>
+        <view class="weui-form-preview__skeleton-btn"><skeleton variant="rect" width="6em" height="20px" /></view>
+      </view>
+    </view>
+  </block>
 
   <view class="weui-form-preview" wx:for="{{ indices }}" wx:key="idx" wx:for-item="idx">
     <view class="weui-form-preview__hd">
