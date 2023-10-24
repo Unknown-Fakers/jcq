@@ -1,6 +1,91 @@
 import JcqPage from '../../base/JcqPage'
 import { Geo, wgs84ToGcj02 } from '../../utils/geo'
 
+const TeachingAreas = [
+  {
+    points: [
+      { longitude: 106.322100618, latitude: 29.5918780728 },
+      { longitude: 106.320834618, latitude: 29.5915720728 },
+      { longitude: 106.320879618, latitude: 29.5899860728 },
+      { longitude: 106.322702618, latitude: 29.5900330728 },
+      { longitude: 106.322765618, latitude: 29.5904730728 },
+      { longitude: 106.324670618, latitude: 29.5904490728 },
+      { longitude: 106.325469618, latitude: 29.5910540728 },
+      { longitude: 106.324714618, latitude: 29.5925300728 },
+      { longitude: 106.323358618, latitude: 29.5923020728 },
+      { longitude: 106.322702618, latitude: 29.5918940728 },
+      { longitude: 106.322100618, latitude: 29.5918780728 },
+    ],
+    color: '#FF0000DD',
+    width: 2,
+    dottedLine: true
+  },
+  {
+    points: [
+      { longitude: 106.321189618, latitude: 29.5894860728 },
+      { longitude: 106.319212618, latitude: 29.5895010728 },
+      { longitude: 106.3192321796, latitude: 29.5875465807 },
+      { longitude: 106.3211911796, latitude: 29.5875545807 },
+      { longitude: 106.321180618, latitude: 29.5894620728 },
+      { longitude: 106.321189618, latitude: 29.5894860728 },
+      { longitude: 106.321189618, latitude: 29.5894860728 },
+    ],
+    color: "#FF0000DD",
+    width: 2,
+    dottedLine: !0
+  },
+  {
+    points: [
+      { longitude: 106.321269618, latitude: 29.5892660728 },
+      { longitude: 106.3212711796, latitude: 29.5874685807 },
+      { longitude: 106.3234091796, latitude: 29.5874605807 },
+      { longitude: 106.323416618, latitude: 29.5892190728 },
+      { longitude: 106.321278618, latitude: 29.5892660728 },
+      { longitude: 106.321269618, latitude: 29.5892660728 },
+    ],
+    color: "#FF0000DD",
+    width: 2,
+    dottedLine: !0
+  },
+  {
+    points: [
+      { longitude: 106.323506618, latitude: 29.5891240728 },
+      { longitude: 106.3235081796, latitude: 29.5874285807 },
+      { longitude: 106.3262121796, latitude: 29.5874365807 },
+      { longitude: 106.325725618, latitude: 29.5891790728 },
+      { longitude: 106.323515618, latitude: 29.5891240728 },
+    ],
+    color: "#FF0000DD",
+    width: 2,
+    dottedLine: !0
+  },
+  {
+    points: [
+      { longitude: 106.3287340853, latitude: 29.5887817454 },
+      { longitude: 106.326345618, latitude: 29.5887000728 },
+      { longitude: 106.3263561796, latitude: 29.5874285807 },
+      { longitude: 106.3287626608, latitude: 29.5875025241 },
+      { longitude: 106.3287340853, latitude: 29.5887817454 },
+    ],
+    color: "#FF0000DD",
+    width: 2,
+    dottedLine: !0
+  },
+  {
+    points: [
+      { longitude: 106.326498618, latitude: 29.5887240728 },
+      { longitude: 106.3287806608, latitude: 29.5887595241 },
+      { longitude: 106.3288510853, latitude: 29.5900857454 },
+      { longitude: 106.326525618, latitude: 29.5899800728 },
+      { longitude: 106.326525618, latitude: 29.5899800728 },
+      { longitude: 106.326498618, latitude: 29.5887240728 },
+    ],
+    color: "#FF0000DD",
+    width: 2,
+    dottedLine: !0
+  },
+]
+
 const app = getApp<IAppOption>()
 const cloud = app.cloud!() as WxCloud
 
@@ -22,90 +107,7 @@ JcqPage({
     lat: null as number | null,
     lng: null as number | null,
     isGettingLocation: false,
-    teachingAreas: [
-      {
-        points: [
-          { longitude: 106.322100618, latitude: 29.5918780728 },
-          { longitude: 106.320834618, latitude: 29.5915720728 },
-          { longitude: 106.320879618, latitude: 29.5899860728 },
-          { longitude: 106.322702618, latitude: 29.5900330728 },
-          { longitude: 106.322765618, latitude: 29.5904730728 },
-          { longitude: 106.324670618, latitude: 29.5904490728 },
-          { longitude: 106.325469618, latitude: 29.5910540728 },
-          { longitude: 106.324714618, latitude: 29.5925300728 },
-          { longitude: 106.323358618, latitude: 29.5923020728 },
-          { longitude: 106.322702618, latitude: 29.5918940728 },
-          { longitude: 106.322100618, latitude: 29.5918780728 },
-        ],
-        color: '#FF0000DD',
-        width: 2,
-        dottedLine: true
-      },
-      {
-        points: [
-          { longitude: 106.321189618, latitude: 29.5894860728 },
-          { longitude: 106.319212618, latitude: 29.5895010728 },
-          { longitude: 106.3192321796, latitude: 29.5875465807 },
-          { longitude: 106.3211911796, latitude: 29.5875545807 },
-          { longitude: 106.321180618, latitude: 29.5894620728 },
-          { longitude: 106.321189618, latitude: 29.5894860728 },
-          { longitude: 106.321189618, latitude: 29.5894860728 },
-        ],
-        color: "#FF0000DD",
-        width: 2,
-        dottedLine: !0
-      },
-      {
-        points: [
-          { longitude: 106.321269618, latitude: 29.5892660728 },
-          { longitude: 106.3212711796, latitude: 29.5874685807 },
-          { longitude: 106.3234091796, latitude: 29.5874605807 },
-          { longitude: 106.323416618, latitude: 29.5892190728 },
-          { longitude: 106.321278618, latitude: 29.5892660728 },
-          { longitude: 106.321269618, latitude: 29.5892660728 },
-        ],
-        color: "#FF0000DD",
-        width: 2,
-        dottedLine: !0
-      },
-      {
-        points: [
-          { longitude: 106.323506618, latitude: 29.5891240728 },
-          { longitude: 106.3235081796, latitude: 29.5874285807 },
-          { longitude: 106.3262121796, latitude: 29.5874365807 },
-          { longitude: 106.325725618, latitude: 29.5891790728 },
-          { longitude: 106.323515618, latitude: 29.5891240728 },
-        ],
-        color: "#FF0000DD",
-        width: 2,
-        dottedLine: !0
-      },
-      {
-        points: [
-          { longitude: 106.3287340853, latitude: 29.5887817454 },
-          { longitude: 106.326345618, latitude: 29.5887000728 },
-          { longitude: 106.3263561796, latitude: 29.5874285807 },
-          { longitude: 106.3287626608, latitude: 29.5875025241 },
-          { longitude: 106.3287340853, latitude: 29.5887817454 },
-        ],
-        color: "#FF0000DD",
-        width: 2,
-        dottedLine: !0
-      },
-      {
-        points: [
-          { longitude: 106.326498618, latitude: 29.5887240728 },
-          { longitude: 106.3287806608, latitude: 29.5887595241 },
-          { longitude: 106.3288510853, latitude: 29.5900857454 },
-          { longitude: 106.326525618, latitude: 29.5899800728 },
-          { longitude: 106.326525618, latitude: 29.5899800728 },
-          { longitude: 106.326498618, latitude: 29.5887240728 },
-        ],
-        color: "#FF0000DD",
-        width: 2,
-        dottedLine: !0
-      },
-    ],
+    teachingAreas: [],
 
     error: ''
   },
@@ -124,7 +126,7 @@ JcqPage({
       return
     }
     this.setData({
-      course,
+      course, teachingAreas: TeachingAreas,
       'checkin.course': course.number, 'checkin.teacher': course.teacher.number,
       autoFocus: app.settings.autoLocateWhenCheckin  // 没有自动获取位置就不要自动弹出键盘了
     })
