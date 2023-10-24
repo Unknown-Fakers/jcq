@@ -21,14 +21,13 @@ App({
 
   _userDetailFetchPromise: undefined as Promise<void> | undefined,
 
-  async onLaunch() {
+  onLaunch() {
     this._registerAppUpdateEvent()
     this._registerNetworkEvents()
     this._loadLocalSettings()
-    await this._initCloud()
+    this._initCloud()
 
     this._userDetailFetchPromise = this._fetchUserDetail()
-    await this._userDetailFetchPromise
 
     this.onThemeChange({ theme: wx.getAppBaseInfo().theme ?? 'light' })
   },
@@ -36,7 +35,7 @@ App({
   /**
    * 初始化云开发环境（支持环境共享和正常两种模式）
    */
-  async _initCloud() {
+  _initCloud() {
     const shareInfo = wx.getExtConfigSync()  // 检查 ext 配置文件
     const normalInfo = require('./envList.js').envList || []  // 读取 envlist 文件
     if (shareInfo.envid != null) {  // 如果 ext 配置文件存在，环境共享模式

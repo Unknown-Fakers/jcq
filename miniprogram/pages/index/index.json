@@ -4,5 +4,6 @@
     "skeleton": "../../components/skeleton/index"
   },
   "navigationBarTitleText": "课程",
-  "enablePullDownRefresh": true
+  "enablePullDownRefresh": true,
+  "initialRenderingCache": "static"
 }
