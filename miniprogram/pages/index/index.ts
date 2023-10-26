@@ -12,6 +12,8 @@ JcqPage({
 
   onLoad(_options: Record<string, string | undefined>) {
     this.fetchAndProcessCourses()
+      // 预加载搭子圈数据
+      .finally(() => app.getUserBatches())
   },
 
   async onPullDownRefresh() {

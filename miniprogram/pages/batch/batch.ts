@@ -49,30 +49,6 @@ JcqPage({
         joinedBatches.push(batch)
       }
     }
-    this.setData({ ownedBatches, joinedBatches })
-  },
-
-  /**
-   * 退出搭子圈。
-   */
-  async quit(e) {
-    const batchId = e.target.dataset.batchId
-    const index = e.target.dataset.index
-
-    // 删除搭子圈成员记录
-    await db.collection('batch_members').where({
-      _openid: app.globalData.openid,
-      batch_id: batchId
-    }).remove()
-
-    // 删除用户个人信息中的搭子圈 ID
-    app.globalData.user.batches.splice(index)
-    await db.collection('users').doc(app.globalData.user._id).update({
-      data: {
-        batches: app.globalData.user.batches
-      }
-    })
-
-    wx.startPullDownRefresh()
+    this.setData({ ownedBatches, joinedBatches, showSkeleton: false })
   }
 })
