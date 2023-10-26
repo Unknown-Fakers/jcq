@@ -1,8 +1,6 @@
 import JcqPage from '../../base/JcqPage'
 import { wgs84ToGcj02 } from '../../utils/geo'
 
-const app = getApp<IAppOption>()
-
 JcqPage({
   data: {
     location: {
