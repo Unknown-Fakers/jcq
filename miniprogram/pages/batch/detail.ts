@@ -211,7 +211,7 @@ JcqPage({
         datetimePickerRange[4] = Array.from({ length: 60 - now.minute() }, (_, i) => `${now.minute() + i}分`)
       } else if (datetimePickerValue[0] === datetimePickerRange[0].length - 1 && month === deadline.month() + 1 && date === deadline.date() && hour === deadline.hour()) {
         // 小时是 deadline 小时，分钟从 0 分开始，到 deadline 分钟结束
-        datetimePickerRange[4] = Array.from({ length: deadline.minute() }, (_, i) => `${i}分`)
+        datetimePickerRange[4] = Array.from({ length: deadline.minute() + 1 }, (_, i) => `${i}分`)
       } else {
         // 其他情况，分钟从 0 分开始，到 59 分结束
         datetimePickerRange[4] = Array.from({ length: 60 }, (_, i) => `${i}分`)
