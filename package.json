@@ -9,5 +9,8 @@
     "miniprogram-api-typings": "^3.12.1"
   },
   "main": ".eslintrc.js",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "dayjs": "^1.11.10"
+  }
 }

@@ -1,4 +1,10 @@
+import dayjs from 'dayjs'
+
 const themeChangeListeners: Listener<Theme>[] = []
+
+// dayjs 国际化，全局使用简体中文
+require('./utils/dayjs-locale-zh_cn')
+dayjs.locale('zh-cn')
 
 App({
   globalData: {
@@ -237,6 +243,7 @@ App({
       } catch { }
       if (batch) {
         batch.data.no_default_select = member.no_default_select
+        batch.data.pause_checkin_for_me_until = member.pause_checkin_until
         batch.data.member_id = member._id
         batches.push(batch.data as Batch)
       }

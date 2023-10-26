@@ -242,8 +242,8 @@ exports.main = async (event, context) => {
 
     // 查询所有需要签到的学生
     const students = (await db.collection('batch_members').aggregate()
-      .project({ _id: 0, batch_id: 1, _openid: 1 })
-      .match({ batch_id: _.in(batches) })
+      .project({ _id: 0, batch_id: 1, _openid: 1, pause_checkin_until: 1 })
+      .match({ batch_id: _.in(batches), pause_checkin_until: _.lt(new Date()) })
       .group({ _id: '$_openid' })
       .lookup({
         from: 'users',

@@ -18,6 +18,15 @@
     <mp-cell ext-class="weui-cell_switch" title="签到时默认勾选">
       <switch slot="footer" checked="{{ selectByDefault }}" bind:change="onDefaultSelectChanged" />
     </mp-cell>
+    <picker header-text="暂停为我签到至" mode="multiSelector" range="{{ datetimePickerRange }}" value="{{ datetimePickerValue }}" bind:columnchange="updatePauseCheckinPicker" bind:change="onPauseCheckinPickerChanged" bind:cancel="initPauseCheckinPicker" disabled="{{ pauseCheckinForMe.loading || pauseCheckinForMe.until }}">
+      <mp-cell title="暂停为我签到" link bind:tap="{{ pauseCheckinForMe.until ? 'removeCheckinPause' : '' }}">
+        <view wx:if="{{ !pauseCheckinForMe.loading }}" slot="footer">
+          <block wx:if="{{ pauseCheckinForMe.until }}">至 {{ pauseCheckinForMe.until }}</block>
+          <block wx:else>否</block>
+        </view>
+        <view wx:else slot="footer" class="weui-loading" />
+      </mp-cell>
+    </picker>
   </mp-cells>
 
   <mp-cells>
