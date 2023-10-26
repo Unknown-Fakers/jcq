@@ -381,5 +381,79 @@ exports.main = async (event, context) => {
     }
   })
 
+  app.router(['locations', 'checkins'], async (ctx, next) => {
+    const { course, index } = event
+    const response = await fetch(`https://icq.cqust.edu.cn/interface/minfor.action?cnum=${course}&nid=${index}`)
+    try {
+      ctx.details = await response.json()
+    } catch (err) {
+      console.error(err)
+      ctx.body = { code: -1 }  // 解析服务器响应失败
+    }
+    if (ctx.details) {
+      await next()
+    } else {
+      ctx.body = { code: 999 }  // 未知错误
+    }
+  })
+
+  app.router('locations', async (ctx) => {
+    const allLocations = []
+    for (let i = 0; i < ctx.details.length; i++) {
+      if (ctx.details[i].infor_key) {
+        const locationStr = ctx.details[i].infor_location
+        const latMatch = locationStr.match(/纬度:(\d+\.\d+)/)
+        const lngMatch = locationStr.match(/经度:(\d+\.\d+)/)
+        allLocations.push({
+          area: ctx.details[i].infor_key.replace(/\[|\]/g, ''),
+          name: ctx.details[i].infor_stuname,
+          location: {
+            lat: Number(latMatch[1]),
+            lng: Number(lngMatch[1])
+          }
+        })
+      }
+    }
+    ctx.body = {
+      code: 0,
+      index: event.index,
+      data: allLocations
+    }
+  })
+
+  app.router('checkins', async (ctx) => {
+    const attended = []
+    const late = []
+    const leave = []
+    const absent = []
+
+    for (let i = 0; i < ctx.details.length; i++) {
+      ctx.details[i].infor_type = Number(ctx.details[i].infor_type)
+      if (ctx.details[i].infor_type === 0) {
+        attended.push({"name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type})
+      }
+      else if (ctx.details[i].infor_type === 1) {
+        late.push({"name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type})
+      }
+      else if (ctx.details[i].infor_type === 2) {
+        leave.push({"name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type})
+      }
+      else if (ctx.details[i].infor_type === -1) {
+        absent.push({"name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type})
+       }
+    }
+    
+    ctx.body = {
+      code: 0,
+      index: event.index,
+      data: {
+        attended,
+        late,
+        leave,
+        absent
+      }
+    }
+  })
+
   return app.serve()
 }
