@@ -6,6 +6,9 @@ require('events').EventEmitter.defaultMaxListeners = 100
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
+/**
+ * @type {DB.Database}
+ */
 const db = cloud.database()
 const _ = db.command
 const $ = _.aggregate
@@ -243,7 +246,7 @@ exports.main = async (event, context) => {
     // 查询所有需要签到的学生
     const students = (await db.collection('batch_members').aggregate()
       .project({ _id: 0, batch_id: 1, _openid: 1, pause_checkin_until: 1 })
-      .match({ batch_id: _.in(batches), pause_checkin_until: _.lt(new Date()) })
+      .match({ batch_id: _.in(batches), pause_checkin_until: _.exists(false).or(_.lt(new Date())) })
       .group({ _id: '$_openid' })
       .lookup({
         from: 'users',
@@ -342,12 +345,12 @@ exports.main = async (event, context) => {
         // 为每条记录添加地理位置信息
         records[i].location = {}
         if (records[i].infor_location.includes('纬度')) {
-        records[i].location.area = records[i].infor_key.replace(/\[|\]/g, '')
-        const locationStr = records[i].infor_location
-        const latMatch = locationStr.match(/纬度:(\d+\.\d+)/)
-        const lngMatch = locationStr.match(/经度:(\d+\.\d+)/)
-        records[i].location.lat = Number(latMatch[1])
-        records[i].location.lng = Number(lngMatch[1])
+          records[i].location.area = records[i].infor_key.replace(/\[|\]/g, '')
+          const locationStr = records[i].infor_location
+          const latMatch = locationStr.match(/纬度:(\d+\.\d+)/)
+          const lngMatch = locationStr.match(/经度:(\d+\.\d+)/)
+          records[i].location.lat = Number(latMatch[1])
+          records[i].location.lng = Number(lngMatch[1])
         }
         else {
           records[i].location.area = "未上传地理位置"
