@@ -10,7 +10,6 @@ JcqPage({
       name: '',
       number: ''
     },
-    agreed: false,
     isFocusToStudentNumber: false,
     formRules: [
       { name: 'name', rules: [{ required: true, message: '请输入姓名' }, { minlength: 2, message: '姓名至少 2 位字符' }] },
@@ -18,10 +17,6 @@ JcqPage({
     ],
     error: ''
   },
-
-  // onAgreementsChanged(e) {
-  //   this.setData({ agreed: e.detail.value.length !== 0 })
-  // },
 
   focusToStudentNumber() {
     this.setData({ isFocusToStudentNumber: true })
@@ -84,8 +79,10 @@ JcqPage({
         if (res.data.length !== 0) {
           app.globalData.openid = openid
           app.globalData.user = res.data[0]
-          wx.switchTab({
-            url: '/pages/index/index'
+          wx.setStorage({
+            key: 'user',
+            data: res.data[0],
+            success: () => wx.switchTab({ url: '/pages/index/index' })
           })
         } else {
           console.error(`无 OPENID 为 ${openid} 的用户存在于数据库中`)

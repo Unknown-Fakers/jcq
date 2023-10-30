@@ -25,7 +25,10 @@ App({
     autoLocateWhenCheckin: true
   },
 
-  _userDetailFetchPromise: undefined as Promise<void> | undefined,
+  // 一种请求只允许全局同时存在一个
+  _userDetailFetchPromise: null as Promise<void> | null,
+  _coursesFetchPromise: null as Promise<void> | null,
+  _batchesFetchPromise: null as Promise<void> | null,
 
   onLaunch() {
     this._registerAppUpdateEvent()
@@ -33,7 +36,7 @@ App({
     this._loadLocalSettings()
     this._initCloud()
 
-    this._userDetailFetchPromise = this._fetchUserDetail()
+    this._userDetailFetchPromise = this._fetchUserDetail().finally(() => { this._userDetailFetchPromise = null })
 
     this.onThemeChange({ theme: wx.getAppBaseInfo().theme ?? 'light' })
   },
@@ -164,6 +167,7 @@ App({
     }
 
     const cloud = (this as any).cloud() as WxCloud
+
     if (!openid) {
       const response = await cloud.callFunction({
         name: 'registe',
@@ -193,11 +197,22 @@ App({
     }
   },
 
+  async getUserDetail(refresh = false) {
+    if (!this.globalData.user || refresh) {
+      // 防止多次请求
+      if (!this._userDetailFetchPromise) {
+        this._userDetailFetchPromise = this._fetchUserDetail().finally(() => { this._userDetailFetchPromise = null })
+      }
+      await this._userDetailFetchPromise
+    }
+    return this.globalData.user!
+  },
+
   /**
    * 获取学号，如果用户没有绑定学号，则跳转到注册页面，返回空字符串。
    */
   async _getUserStudentNumber() {
-    await this._userDetailFetchPromise
+    await this.getUserDetail()
 
     const user = this.globalData.user
     if (!user || !user.student_number || user.student_number.length !== 10) {
@@ -218,7 +233,7 @@ App({
   },
 
   async _fetchUserBatches() {
-    await this._userDetailFetchPromise
+    await this.getUserDetail()
 
     const openid = this.globalData.openid
     if (!openid) return
@@ -254,7 +269,11 @@ App({
 
   async getUserBatches(refresh = false) {
     if (!this.globalData.batches || refresh) {
-      await this._fetchUserBatches()
+      // 防止多次请求
+      if (!this._batchesFetchPromise) {
+        this._batchesFetchPromise = this._fetchUserBatches().finally(() => { this._batchesFetchPromise = null })
+      }
+      await this._batchesFetchPromise
     }
     return this.globalData.batches!
   },
@@ -273,12 +292,21 @@ App({
 
     if (result?.code === 0) {
       this.globalData.courses = result.data
+    } else if (result?.code === 1) {
+      // 未绑定学号信息
+      console.log('服务器端响应未绑定学号信息，删除本地用户缓存，跳转到注册页面')
+      wx.removeStorageSync('user')
+      wx.redirectTo({ url: '/pages/register/register' })
     }
   },
 
   async getUserCourses(refresh = false) {
     if (!this.globalData.courses || refresh) {
-      await this._fetchUserCourses()
+      // 防止多次请求
+      if (!this._coursesFetchPromise) {
+        this._coursesFetchPromise = this._fetchUserCourses().finally(() => { this._coursesFetchPromise = null })
+      }
+      await this._coursesFetchPromise
     }
     return this.globalData.courses!
   },

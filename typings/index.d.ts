@@ -14,6 +14,7 @@ interface IAppOption {
     _cloud: WxCloud | null
   }
   settings: AppLocalSettings & Record<string, any>
+  getUserDetail(refresh?: boolean): Promise<User>
   getUserBatches(refresh?: boolean): Promise<Batch[]>
   getUserCourses(refresh?: boolean): Promise<Course[]>
   cloud?: () => MaybePromise<WxCloud>

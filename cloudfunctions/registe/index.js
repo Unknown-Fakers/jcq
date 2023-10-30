@@ -99,7 +99,7 @@ exports.main = async (event, context) => {
 
   app.router('unbind', async (ctx) => {
     const wxContext = cloud.getWXContext()
-    
+
     // 解散创建的搭子圈
     try {
       const ownedBatches = await db.collection('batches').where({ _openid: wxContext.OPENID }).get()

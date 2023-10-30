@@ -9,7 +9,10 @@ JcqPage({
   },
 
   onLoad() {
-    this.setData({ username: app.globalData.user?.student_number ?? '未知用户' })
+    app.getUserDetail()
+      .then(user => {
+        this.setData({ username: user.student_number ?? '未知用户' })
+      })
   },
 
   unbind() {
@@ -23,9 +26,11 @@ JcqPage({
           name: 'registe',
           data: { $url: 'unbind' },
           success: () => {
+            wx.removeStorageSync('openid')
+            wx.removeStorageSync('user')
             app.globalData.openid = ''
             app.globalData.user = {}
-            wx.reLaunch({ url: '/pages/start/start' })
+            wx.reLaunch({ url: '/pages/index/index' })
           }
         })
       }

@@ -17,17 +17,8 @@
       </mp-cells>
     </mp-form>
 
-    <checkbox-group slot="tips" bind:change="onAgreementsChanged" wx:if="{{ false }}">
-      <label class="weui-agree">
-        <checkbox class="weui-agree__checkbox-check" />
-
-        <text class="weui-agree__checkbox"></text>
-        <view class="weui-agree__text">阅读并同意<navigator url="/pages/legal/service">《服务协议》</navigator>和<navigator>《隐私政策》</navigator></view>
-      </label>
-    </checkbox-group>
-
     <view slot="button">
-      <button class="weui-btn" type="primary" bind:tap="submit">绑定</button>
+      <button class="weui-btn" type="primary" bind:agreeprivacyauthorization="submit" open-type="agreePrivacyAuthorization">绑定</button>
     </view>
   </mp-form-page>
 </view>
