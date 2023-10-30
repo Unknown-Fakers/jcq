@@ -56,7 +56,7 @@
     </view>
     <view class="weui-form-preview__ft">
       <view class="weui-form-preview__btn weui-form-preview__btn_default">更多签到记录</view>
-      <view wx:if="{{record.location.area !== '未上传地理位置'}}" class="weui-form-preview__btn weui-form-preview__btn_primary" bind:tap="navigateToLocation" data-index="{{index}}">定位详情</view>
+      <view class="weui-form-preview__btn weui-form-preview__btn_primary" bind:tap="navigateToLocation" data-index="{{index}}">定位详情</view>
     </view>
   </view>
   <view class="weui-loadmore weui-loadmore_line" wx:if="{{ !records.length }}">

@@ -1,5 +1,4 @@
 import JcqPage from '../../base/JcqPage'
-import { Geo } from '../../utils/geo'
 const app = getApp<IAppOption>()
 const cloud = app.cloud!() as WxCloud
 
@@ -83,18 +82,12 @@ JcqPage({
     }
   },
   navigateToLocation(e: WechatMiniprogram.TouchEvent) {
-    const index: string | undefined = e.target.dataset.index
+    console.log(this.data.records)
+    const index: Number | undefined = this.data.records.length - e.target.dataset.index  //将倒序后的索引变为正确索引
     wx.navigateTo({
-      url: '/pages/checkin/location',
-      success: (res) => {
-        const locationPoint : Geo = {
-          lat: this.data.records[index!].location.lat,
-          lng: this.data.records[index!].location.lng
-        }
-        res.eventChannel.emit('location', { area: this.data.records[index!].location.area, ...locationPoint })
-      }
+      url: `/pages/checkin/location?index=${index}&course=${this.data.Course.number}`
     })
     console.log(index)
-    console.log(this.data.records[index!].location)
+    console.log(this.data.Course.number)
   },
 })

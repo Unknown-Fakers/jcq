@@ -3,69 +3,73 @@ import { wgs84ToGcj02 } from '../../utils/geo'
 
 JcqPage({
   data: {
-    location: {
+    centerLocation: {
       lat: 0,
       lng: 0,
     },
-    markers: [{
-      id: 0,
-      latitude: 0,
-      longitude: 0,
-      iconPath: '/asset/ic_location_mark.png',
-      width: 40,
-      height: 40,
-      callout: {}
-    }]
+    markers: [],
+    latitudes: [],
+    longitudes: [],
+    index: null,
+    course: '',
   },
-  darkThemeStyle:{
-    content: '',
-    color: '#FFF',
-    fontSize: 14,
-    borderRadius: 15,
-    borderColor: '#222222',
-    bgColor: '#000',
-    padding: 10,
-    display: 'ALWAYS' 
+  async onLoad(options: Record<string, string | undefined>) {
+    if (!options.index) {
+      wx.showToast({ icon: 'error', title: '获取位置失败' })
+      return
+    }
+    this.setData({ index: parseInt(options.index, 10), course: options.course})
+    this.getLocation()
   },
-  lightThemeStyle:{
-    content: '',
-    color: '#000',
-    fontSize: 14,
-    borderRadius: 15,
-    borderColor: '#f5f5f5',
-    bgColor: '#FFF',
-    padding: 10,
-    display: 'ALWAYS' 
-  },
-  async onLoad() {
-    console.log(this.data.theme)
-    console.log(this.data.markers[0].callout)
-    const eventChannel = this.getOpenerEventChannel()
-    eventChannel.on('location', (data: any) => {
-      if (data.lat === 0) {
-        return
+
+  async getLocation() {
+    let result: ApiResponse<CheckinResult> | undefined
+    try {
+      result = (await wx.cloud.callFunction({
+        name: 'icq',
+        data: {
+          $url: 'locations',
+          course: this.data.course,
+          index: this.data.index
+        }
+      })).result as ApiResponse<CheckinResult>
+    } catch (err) {
+      wx.showToast({ icon: 'error', title: '获取失败' })
+      return
+    }
+    if (result?.code !== 0) {
+      wx.showToast({ icon: 'error', title: '服务器未响应' })
+      return
+    }else if (result?.code === 0 && !result?.data) {
+      wx.showToast({ icon: 'error', title: '无任何位置信息' })
+    }else {
+      const locationData: any = result?.data
+      console.log(locationData)
+      locationData.markers = []
+      const latitudes = [], longitudes = []
+      for (let i = 0; i < locationData.length; i++) {
+        const locationPoint = wgs84ToGcj02(locationData[i].location) 
+        latitudes.push(locationPoint.lat)   // 用于计算中心点
+        longitudes.push(locationPoint.lng)
+        locationData.markers.push({
+          id: i,
+          latitude: locationPoint.lat,
+          longitude: locationPoint.lng,
+          iconPath: '/asset/ic_location_mark.png',
+          width: 40,
+          height: 40,
+          title: locationData[i].name,
+        })
       }
-      const location = wgs84ToGcj02(data)
-      this.lightThemeStyle.content = this.darkThemeStyle.content = data.area
+      
       this.setData({
-        location: location,
-        'markers[0].latitude': location.lat,
-        'markers[0].longitude': location.lng,
-        'markers[0].callout.content': data.area
+        markers: locationData.markers,
+        centerLocation: {
+          lat:latitudes[Math.floor(latitudes.length / 2)],  // 用取中位数法计算中心点
+          lng:longitudes[Math.floor(longitudes.length / 2)]
+        }
       })
-    })
-  },
-  onThemeChanged(theme: Theme) {
-    if(theme === 'light') {
-      this.setData({ 
-        'markers[0].callout': this.lightThemeStyle,
-        theme
-      })
-    } else {
-      this.setData({ 
-        'markers[0].callout': this.darkThemeStyle,
-        theme
-      })
+      console.log(this.data.markers)
     }
   }
 })
