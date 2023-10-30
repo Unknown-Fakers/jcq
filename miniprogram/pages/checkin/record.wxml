@@ -55,7 +55,7 @@
       </view>
     </view>
     <view class="weui-form-preview__ft">
-      <view class="weui-form-preview__btn weui-form-preview__btn_default">更多签到记录</view>
+      <view class="weui-form-preview__btn weui-form-preview__btn_default" bind:tap="navigateToDetail" data-index="{{index}}">更多签到记录</view>
       <view class="weui-form-preview__btn weui-form-preview__btn_primary" bind:tap="navigateToLocation" data-index="{{index}}">定位详情</view>
     </view>
   </view>

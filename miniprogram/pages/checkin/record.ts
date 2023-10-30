@@ -90,4 +90,12 @@ JcqPage({
     console.log(index)
     console.log(this.data.Course.number)
   },
+  navigateToDetail(e: WechatMiniprogram.TouchEvent) {
+    const index: Number | undefined = this.data.records.length - e.target.dataset.index  //将倒序后的索引变为正确索引
+    wx.navigateTo({
+      url: `/pages/checkin/detail?index=${index}&course=${this.data.Course.number}`
+    })
+    console.log(index)
+    console.log(this.data.Course.number)
+  }
 })

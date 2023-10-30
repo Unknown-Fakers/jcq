@@ -1,2 +1,34 @@
-<!--pages/checkin/detail.wxml-->
-<text>pages/checkin/detail.wxml</text>
+<view class="page" data-weui-theme="{{ theme }}">
+    <mp-cells wx:if="{{absent.length}}" title="缺勤{{absent.length}}人">
+        <mp-cell wx:for="{{absent}}" wx:key="index">
+            <view>{{absent[index].name}}</view>
+            <view slot="footer">
+                <icon type="warn" size="25" color="#ffc300"></icon>
+            </view>
+        </mp-cell>
+    </mp-cells>
+     <mp-cells wx:if="{{leave.length}}" title="请假{{leave.length}}人">
+        <mp-cell wx:for="{{leave}}" wx:key="index">
+            <view>{{leave[index].name}}</view>
+            <view slot="footer">
+                <icon type="info" size="25"></icon>
+            </view>
+        </mp-cell>
+    </mp-cells>
+     <mp-cells wx:if="{{late.length}}" title="迟到{{late.length}}人">
+        <mp-cell wx:for="{{late}}" wx:key="index">
+            <view>{{late[index].name}}</view>
+            <view slot="footer">
+            <icon type="waiting" size="25"></icon>
+            </view>
+        </mp-cell>
+    </mp-cells>
+     <mp-cells wx:if="{{attended.length}}" title="出勤{{attended.length}}人">
+        <mp-cell wx:for="{{attended}}" wx:key="index">
+            <view>{{attended[index].name}}</view>
+            <view slot="footer">
+                <icon type="success" size="25"></icon>
+            </view>
+        </mp-cell>
+    </mp-cells>
+</view>
