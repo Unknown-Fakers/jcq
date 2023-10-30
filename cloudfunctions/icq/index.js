@@ -346,17 +346,12 @@ exports.main = async (event, context) => {
         records[i].location = {}
         if (records[i].infor_location.includes('纬度')) {
           records[i].location.area = records[i].infor_key.replace(/\[|\]/g, '')
-          const locationStr = records[i].infor_location
-          const latMatch = locationStr.match(/纬度:(\d+\.\d+)/)
-          const lngMatch = locationStr.match(/经度:(\d+\.\d+)/)
-          records[i].location.lat = Number(latMatch[1])
-          records[i].location.lng = Number(lngMatch[1])
         }
         else {
           records[i].location.area = "未上传地理位置"
-          records[i].location.lat = 0
-          records[i].location.lng = 0
         }
+        // 为每条记录添加索引
+        records[i].index = i+1
       }
 
       ctx.body = {
@@ -364,6 +359,7 @@ exports.main = async (event, context) => {
         data: records.map((record) => {
           return {
             // location: record.infor_key.replace(/\[|\]/g, ''),
+            index: record.index,
             time: record.infor_time,
             status: Number(record.infor_type),
             operation_type: record.operation_type,
@@ -405,7 +401,7 @@ exports.main = async (event, context) => {
         const latMatch = locationStr.match(/纬度:(\d+\.\d+)/)
         const lngMatch = locationStr.match(/经度:(\d+\.\d+)/)
         allLocations.push({
-          area: ctx.details[i].infor_key.replace(/\[|\]/g, ''),
+          // area: ctx.details[i].infor_key.replace(/\[|\]/g, ''),
           name: ctx.details[i].infor_stuname,
           location: {
             lat: Number(latMatch[1]),
