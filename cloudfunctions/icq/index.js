@@ -397,17 +397,19 @@ exports.main = async (event, context) => {
     const allLocations = []
     for (let i = 0; i < ctx.details.length; i++) {
       if (ctx.details[i].infor_key) {
-        const locationStr = ctx.details[i].infor_location
-        const latMatch = locationStr.match(/纬度:(\d+\.\d+)/)
-        const lngMatch = locationStr.match(/经度:(\d+\.\d+)/)
-        allLocations.push({
-          // area: ctx.details[i].infor_key.replace(/\[|\]/g, ''),
-          name: ctx.details[i].infor_stuname,
-          location: {
-            lat: Number(latMatch[1]),
-            lng: Number(lngMatch[1])
-          }
-        })
+        if (ctx.details[i].infor_location.includes('纬度')) {
+          const locationStr = ctx.details[i].infor_location
+          const latMatch = locationStr.match(/纬度:(\d+\.\d+)/)
+          const lngMatch = locationStr.match(/经度:(\d+\.\d+)/)
+          allLocations.push({
+            // area: ctx.details[i].infor_key.replace(/\[|\]/g, ''),
+            name: ctx.details[i].infor_stuname,
+            location: {
+              lat: Number(latMatch[1]),
+              lng: Number(lngMatch[1])
+            }
+          })
+        }
       }
     }
     ctx.body = {
