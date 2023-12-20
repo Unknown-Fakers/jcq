@@ -15,6 +15,13 @@ interface BehaviorExtend {
 
 const newThemeBehavior = Behavior({
   lifetimes: {
+    created(this: BehaviorExtend) {
+      // 不能在 methods 中定义，app 中调用时会丢失 this，此处使用 created 的 this
+      this._changeTheme = (theme: string) => {
+        this.setData({ theme })
+        this.onThemeChanged?.(theme)
+      }
+    },
     attached(this: BehaviorExtend) {
       const app = getApp<IAppOption>()
       this._changeTheme(app.globalData.theme)
@@ -33,12 +40,6 @@ const newThemeBehavior = Behavior({
     theme: {
       type: String,
       value: 'light'
-    }
-  },
-  methods: {
-    _changeTheme(this: BehaviorExtend, theme: string) {
-      this.setData({ theme })
-      this.onThemeChanged?.(theme)
     }
   }
 })
