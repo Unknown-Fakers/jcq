@@ -95,6 +95,7 @@ ThemedComponentWithComputed({
         topIndices.splice(index, 1)
       } else {
         topIndices.push(number)
+        wx.showToast({ title: '已将课程置顶', icon: 'success', duration: 1000 })
       }
 
       this.setData({ topIndices })
