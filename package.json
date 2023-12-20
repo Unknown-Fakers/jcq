@@ -11,6 +11,7 @@
   "main": ".eslintrc.js",
   "description": "",
   "dependencies": {
-    "dayjs": "^1.11.10"
+    "dayjs": "^1.11.10",
+    "miniprogram-computed": "^4.4.0"
   }
 }

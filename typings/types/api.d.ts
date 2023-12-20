@@ -1,13 +1,15 @@
 declare interface Course {
   id: number
-  number: string,
-  name: string,
-  teacher: { number: string, name: string },
+  number: string
+  name: string
+  teacher: { number: string, name: string }
   compositions?: string[]
-  days_of_week?: number[],
-  in_this_week?: boolean[],
-  today?: boolean[],
+  days_of_week?: number[]
+  in_this_week?: boolean[]
+  today?: boolean[]
   detail: string[]
+
+  topped?: boolean
 }
 
 declare interface Batch extends DB.IDocumentData {

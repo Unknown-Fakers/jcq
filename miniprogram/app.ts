@@ -12,6 +12,7 @@ App({
     isNetworkConnected: true,
     user: {} as User,
     openid: '',
+
     batches: undefined as Batch[] | undefined,
     courses: undefined as Course[] | undefined
   },
@@ -227,6 +228,9 @@ App({
       keyList: ['no_auto_locate_when_checkin'],
       success: (res) => {
         const data: any[] = (res as any).dataList
+        if (!data) return
+
+        // 本地设置中的 no_auto_locate_when_checkin 为 true 时，自动定位功能为 false
         this.settings.autoLocateWhenCheckin = !data[0]
       }
     })

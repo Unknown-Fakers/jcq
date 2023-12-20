@@ -26,13 +26,31 @@
         </view>
       </view>
       <view class="weui-form-preview__ft">
-        <view class="weui-form-preview__skeleton-btn"><skeleton variant="rect" width="6em" height="20px" /></view>
+        <view class="weui-form-preview__skeleton-btn topping-btn"><skeleton variant="rect" width="24px" height="24px" /></view>
+        <view class="weui-form-preview__skeleton-btn query-btn"><skeleton variant="rect" width="6em" height="20px" /></view>
         <view class="weui-form-preview__skeleton-btn"><skeleton variant="rect" width="6em" height="20px" /></view>
       </view>
     </view>
   </block>
 
-  <view class="weui-form-preview" wx:for="{{ indices }}" wx:key="idx" wx:for-item="idx">
+  <block wx:for="{{ topIndices }}" wx:for-item="idx" wx:key="idx">
+    <template is="course" data="{{ ...{ idx, courses, theme, topped: true } }}" />
+  </block>
+
+  <block wx:for="{{ indices }}" wx:for-item="idx" wx:key="idx">
+    <template is="course" data="{{ ...{ idx, courses, theme, topped: false } }}" />
+  </block>
+
+  <view class="weui-loadmore weui-loadmore_line" wx:if="{{ !indices.length }}">
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无数据</view>
+  </view>
+  <view class="weui-loadmore weui-loadmore_line weui-loadmore_dot" wx:else>
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line weui-loadmore__tips_in-dot"></view>
+  </view>
+</view>
+
+<template name="course">
+  <view class="weui-form-preview" mark:courseNumber="{{ idx }}">
     <view class="weui-form-preview__hd">
       <view class="weui-form-preview__label">课程名称</view>
       <view class="weui-form-preview__value_in-hd">{{ courses[idx][0].name }}</view>
@@ -53,16 +71,10 @@
       </view>
     </view>
     <view class="weui-form-preview__ft">
-      <navigator class="weui-form-preview__btn weui-form-preview__btn_default" hover-class="weui-form-preview__btn_active" url="/pages/checkin/record?id={{ courses[idx][0].id }}">出勤查询</navigator>
+      <view class="weui-form-preview__btn weui-form-preview__btn_default topping-btn" hover-class="weui-form-preview__btn_active" bind:tap="topOrCancelToppingCourse"><mp-icon ext-class="favorite-icon" icon="star" type="{{ topped ? 'filled' : 'outline' }}" size="{{ 24 }}" color="{{ theme === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.9)' }}" /></view>
+      <navigator class="weui-form-preview__btn weui-form-preview__btn_default query-btn" hover-class="weui-form-preview__btn_active" url="/pages/checkin/record?id={{ courses[idx][0].id }}">出勤查询</navigator>
       <navigator wx:if="{{ courses[idx].length === 1 }}" class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active" url="/pages/checkin/checkin?id={{ courses[idx][0].id }}">签到</navigator>
-      <view wx:else class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active" bind:tap="selectTeacher" data-course-number="{{ idx }}">签到</view>
+      <view wx:else class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active" bind:tap="selectTeacher">签到</view>
     </view>
   </view>
-
-  <view class="weui-loadmore weui-loadmore_line" wx:if="{{ !indices.length }}">
-    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无数据</view>
-  </view>
-  <view class="weui-loadmore weui-loadmore_line weui-loadmore_dot" wx:else>
-    <view class="weui-loadmore__tips weui-loadmore__tips_in-line weui-loadmore__tips_in-dot"></view>
-  </view>
-</view>
+</template>
