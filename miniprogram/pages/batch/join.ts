@@ -8,18 +8,33 @@ const cloud = app.cloud!() as WxCloud
 const db = cloud.database()
 const _ = db.command
 
+interface SearchedBatch {
+  text: string
+  value: string
+  data: Batch
+  diff?: string[]
+  courseDisplayNames?: string[]
+}
+
 JcqPage({
   data: {
     batch: {} as { text: string, value: string, data: Batch },
     courses: [] as Course[],
-    error: ''
+    error: '',
+    autoFocus: true
   },
 
-  async onLoad() {
+  async onLoad(query: Record<string, string | undefined>) {
     this.setData({
       search: this.search.bind(this),
-      courses: await app.getUserCourses()
+      courses: await app.getUserCourses(),
+      autoFocus: !query.id
     })
+
+    if (query.id) {
+      const batch = await db.collection('batches').doc(query.id).get()
+      this.displayBatchDetail({ text: batch.data.name, value: batch.data._id, data: batch.data })
+    }
   },
 
   search(name: string) {
@@ -51,16 +66,20 @@ JcqPage({
     })
   },
 
-  displayBatchDetail(e: WechatMiniprogram.CustomEvent) {
-    this.selectComponent('.searchbar').hideInput()  // 隐藏搜索结果
+  onSelectBatch(e: WechatMiniprogram.CustomEvent) {
     const batch = e.detail.item
+    this.displayBatchDetail(batch)
+  },
+
+  displayBatchDetail(batch: SearchedBatch) {
+    this.selectComponent('.searchbar').hideInput()  // 隐藏搜索结果
 
     // 计算用户课程和圈子课程的差异
     batch.diff = [batch.data.courses, this.data.courses.map((course: Course) => course.number)]
       .reduce((a: string[], b: string[]) => a.filter(c => !b.includes(c)))
 
     // 展示课程
-    if (batch.diff.length === 0) {
+    if (batch.diff!.length === 0) {
       batch.courseDisplayNames = batch.data.courses
         .map((number: string) => {
           const course = this.data.courses.find((course: Course) => course.number === number)

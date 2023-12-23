@@ -18,6 +18,6 @@
   </view>
 
   <view class="searchbar-container">
-    <mp-searchbar class="searchbar" search="{{ search }}" bind:selectresult="displayBatchDetail" focus="{{ true }}" />
+    <mp-searchbar class="searchbar" search="{{ search }}" bind:selectresult="displayBatchDetail" focus="{{ autoFocus }}" />
   </view>
 </view>

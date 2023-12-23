@@ -26,6 +26,13 @@ JcqPage({
     this.initPauseCheckinPicker()
   },
 
+  onShareAppMessage() {
+    return {
+      title: `点击加入 Jcq 搭子圈【${this.data.name}】`,
+      path: `/pages/batch/join?id=${this.data.id}`
+    }
+  },
+
   fetchBatchDetail(id: string) {
     // 获取本地信息
     (async () => {
