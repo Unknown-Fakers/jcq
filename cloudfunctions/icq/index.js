@@ -55,7 +55,7 @@ function encrypt(plaintext) {
  * @param {Date} time
  * @returns
  */
-async function getTemporaryTag(time) {
+async function getTemporaryStudentTag(time) {
   const user = await db.collection('users').doc('7dc1d50265128b5b04531caa1e21ceb1').get()
   const { student_number: studentNumber, icq_password: password } = user.data
 
@@ -64,6 +64,14 @@ async function getTemporaryTag(time) {
   const day = time.getDate() < 10 ? '0' + time.getDate() : time.getDate()
 
   return encrypt(`${studentNumber}_${password}_${year}-${month}-${day}`)
+}
+
+function getTemporaryTeacherTag(time) {
+  const year = time.getFullYear()
+  const month = time.getMonth() + 1 < 10 ? '0' + (time.getMonth() + 1) : time.getMonth() + 1
+  const day = time.getDate() < 10 ? '0' + time.getDate() : time.getDate()
+
+  return encrypt(`2023014_dhl3350080_${year}-${month}-${day}`)
 }
 
 exports.main = async (event, context) => {
@@ -81,7 +89,7 @@ exports.main = async (event, context) => {
     }
 
     ctx.user = userRecords.data[0]
-    ctx.tag = await getTemporaryTag(new Date())
+    ctx.tag = await getTemporaryStudentTag(new Date())
     await next()
   })
 
@@ -336,7 +344,7 @@ exports.main = async (event, context) => {
     const { course } = event
     const [checkinResponse, attendanceInfoResponse] = await Promise.all([
       fetch(`http://icq.cqust.edu.cn/interface/stumentioninfor.action?tag=${ctx.tag}&cnum=${course}&person_uname=${ctx.user.student_number}`),
-      fetch(`http://icq.cqust.edu.cn/interface/mentioncountinfor.action?tag=${ctx.tag}&cnum=${course}`)
+      fetch(`http://icq.cqust.edu.cn/interface/mentioncountinfor.action?tag=${getTemporaryTeacherTag(new Date())}&cnum=${course}`)
     ])
     try {
       ctx.records = await checkinResponse.json()
@@ -381,7 +389,7 @@ exports.main = async (event, context) => {
           records[i].location.area = "未上传地理位置"
         }
         // 为每条记录添加索引
-        records[i].index = i+1
+        records[i].index = i + 1
       }
 
       ctx.body = {
@@ -409,7 +417,7 @@ exports.main = async (event, context) => {
 
   app.router(['locations', 'checkins'], async (ctx, next) => {
     const { course, index } = event
-    const response = await fetch(`https://icq.cqust.edu.cn/interface/minfor.action?tag=${ctx.tag}&cnum=${course}&nid=${index}`)
+    const response = await fetch(`https://icq.cqust.edu.cn/interface/minfor.action?tag=${getTemporaryTeacherTag(new Date())}&cnum=${course}&nid=${index}`)
     try {
       ctx.details = await response.json()
     } catch (err) {
@@ -458,17 +466,17 @@ exports.main = async (event, context) => {
     for (let i = 0; i < ctx.details.length; i++) {
       ctx.details[i].infor_type = Number(ctx.details[i].infor_type)
       if (ctx.details[i].infor_type === 0) {
-        attended.push({"name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type})
+        attended.push({ "name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type })
       }
       else if (ctx.details[i].infor_type === 1) {
-        late.push({"name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type})
+        late.push({ "name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type })
       }
       else if (ctx.details[i].infor_type === 2) {
-        leave.push({"name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type})
+        leave.push({ "name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type })
       }
       else if (ctx.details[i].infor_type === -1) {
-        absent.push({"name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type})
-       }
+        absent.push({ "name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type })
+      }
     }
 
     ctx.body = {
