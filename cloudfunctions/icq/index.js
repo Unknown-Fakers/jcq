@@ -2,6 +2,10 @@ const cloud = require('wx-server-sdk')
 const TcbRouter = require('tcb-router')
 const fetch = require('make-fetch-happen')
 
+const aes = require('./aes.js')
+const key = aes.enc.Utf8.parse('3812627904101511')
+const iv = aes.enc.Utf8.parse('1111111111111111')
+
 require('events').EventEmitter.defaultMaxListeners = 100
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
@@ -37,6 +41,31 @@ function addRandomOffsetApproximately({ lat, lng }, rangeInMeters) {
   return { lat: lat2, lng: lng2 }
 }
 
+function encrypt(plaintext) {
+  const bytes = aes.enc.Utf8.parse(plaintext)
+  return aes.AES.encrypt(bytes, key, {
+    iv,
+    mode: aes.mode.CBC,
+    padding: aes.pad.Pkcs7
+  }).ciphertext.toString().toUpperCase()
+}
+
+/**
+ * 获取临时标签，用于访问 icq。
+ * @param {Date} time
+ * @returns
+ */
+async function getTemporaryTag(time) {
+  const user = await db.collection('users').doc('7dc1d50265128b5b04531caa1e21ceb1').get()
+  const { student_number: studentNumber, icq_password: password } = user.data
+
+  const year = time.getFullYear()
+  const month = time.getMonth() + 1 < 10 ? '0' + (time.getMonth() + 1) : time.getMonth() + 1
+  const day = time.getDate() < 10 ? '0' + time.getDate() : time.getDate()
+
+  return encrypt(`${studentNumber}_${password}_${year}-${month}-${day}`)
+}
+
 exports.main = async (event, context) => {
   const app = new TcbRouter({ event })
 
@@ -52,6 +81,7 @@ exports.main = async (event, context) => {
     }
 
     ctx.user = userRecords.data[0]
+    ctx.tag = await getTemporaryTag(new Date())
     await next()
   })
 
@@ -105,7 +135,7 @@ exports.main = async (event, context) => {
   })
 
   app.router('courses/mine', async (ctx, next) => {
-    const response = await fetch('https://icq.cqust.edu.cn/interface/stuclassinfor.action?person_uname=' + ctx.user.student_number)
+    const response = await fetch(`https://icq.cqust.edu.cn/interface/stuclassinfor.action?tag=${ctx.tag}&person_uname=${ctx.user.student_number}`)
     try {
       ctx.courses = await response.json()
     } catch (err) {
@@ -213,7 +243,7 @@ exports.main = async (event, context) => {
     const { course, teacher, code, batches, geo } = event
 
     // 先尝试为本人签到
-    let response = await fetch(`https://icq.cqust.edu.cn/interface/fdqmentionbyxh.action?cnum=${course}-${teacher}-${code}&xh=${ctx.user.student_number}&location=暂无地理位置`)
+    let response = await fetch(`https://icq.cqust.edu.cn/interface/fdqmentionbyxh.action?tag=${ctx.tag}&cnum=${course}-${teacher}-${code}&xh=${ctx.user.student_number}&location=暂无地理位置`)
     let result
     try {
       result = await response.text()
@@ -234,7 +264,7 @@ exports.main = async (event, context) => {
       if (geo && geo.lat && geo.lng) {
         // 对于位置信息的返回结果，不做检查
         try {
-          await fetch(`https://icq.cqust.edu.cn/interface/updatelocationbyxh.action?cnum=${course}&xh=${ctx.user.student_number}&location=纬度:${geo.lat}经度:${geo.lng}`, {
+          await fetch(`https://icq.cqust.edu.cn/interface/updatelocationbyxh.action?tag=${ctx.tag}&cnum=${course}&xh=${ctx.user.student_number}&location=纬度:${geo.lat}经度:${geo.lng}`, {
             headers: { 'Content-Type': 'application/json' }
           })
         } catch { /* ignore */ }
@@ -262,7 +292,7 @@ exports.main = async (event, context) => {
 
     // 等待所有签到请求完成
     const allResults = await Promise.all(students.map(student => new Promise((resolve, reject) => {
-      fetch(`https://icq.cqust.edu.cn/interface/fdqmentionbyxh.action?cnum=${course}-${teacher}-${code}&xh=${student.student_number}&location=暂无地理位置`)
+      fetch(`https://icq.cqust.edu.cn/interface/fdqmentionbyxh.action?tag=${ctx.tag}&cnum=${course}-${teacher}-${code}&xh=${student.student_number}&location=暂无地理位置`)
         .then(res => res.text())
         .catch(err => reject(err))
         .then(code => resolve(code))
@@ -273,7 +303,7 @@ exports.main = async (event, context) => {
     if (geo && geo.lat && geo.lng) {
       // 有位置信息，为所有同学补充上传位置，并且统计失败信息
       const locationUpdates = [new Promise(resolve => {
-        fetch(`https://icq.cqust.edu.cn/interface/updatelocationbyxh.action?cnum=${course}&xh=${ctx.user.student_number}&location=纬度:${geo.lat}经度:${geo.lng}`, {
+        fetch(`https://icq.cqust.edu.cn/interface/updatelocationbyxh.action?tag=${ctx.tag}&cnum=${course}&xh=${ctx.user.student_number}&location=纬度:${geo.lat}经度:${geo.lng}`, {
           headers: { 'Content-Type': 'application/json' }
         }).then(() => resolve()).catch(() => { /* ignore */ })
       })]
@@ -283,7 +313,7 @@ exports.main = async (event, context) => {
         } else {
           const g = addRandomOffsetApproximately(geo, 5)
           locationUpdates.push(new Promise(resolve => {
-            fetch(`https://icq.cqust.edu.cn/interface/updatelocationbyxh.action?cnum=${course}&xh=${students[i].student_number}&location=纬度:${g.lat}经度:${g.lng}`, {
+            fetch(`https://icq.cqust.edu.cn/interface/updatelocationbyxh.action?tag=${ctx.tag}&cnum=${course}&xh=${students[i].student_number}&location=纬度:${g.lat}经度:${g.lng}`, {
               headers: { 'Content-Type': 'application/json' }
             }).then(() => resolve()).catch(() => { /* ignore */ })
           }))
@@ -305,8 +335,8 @@ exports.main = async (event, context) => {
   app.router('records', async (ctx) => {
     const { course } = event
     const [checkinResponse, attendanceInfoResponse] = await Promise.all([
-      fetch(`http://icq.cqust.edu.cn/interface/stumentioninfor.action?cnum=${course}&person_uname=${ctx.user.student_number}`),
-      fetch(`http://icq.cqust.edu.cn/interface/mentioncountinfor.action?cnum=${course}`)
+      fetch(`http://icq.cqust.edu.cn/interface/stumentioninfor.action?tag=${ctx.tag}&cnum=${course}&person_uname=${ctx.user.student_number}`),
+      fetch(`http://icq.cqust.edu.cn/interface/mentioncountinfor.action?tag=${ctx.tag}&cnum=${course}`)
     ])
     try {
       ctx.records = await checkinResponse.json()
@@ -379,7 +409,7 @@ exports.main = async (event, context) => {
 
   app.router(['locations', 'checkins'], async (ctx, next) => {
     const { course, index } = event
-    const response = await fetch(`https://icq.cqust.edu.cn/interface/minfor.action?cnum=${course}&nid=${index}`)
+    const response = await fetch(`https://icq.cqust.edu.cn/interface/minfor.action?tag=${ctx.tag}&cnum=${course}&nid=${index}`)
     try {
       ctx.details = await response.json()
     } catch (err) {
@@ -440,7 +470,7 @@ exports.main = async (event, context) => {
         absent.push({"name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type})
        }
     }
-    
+
     ctx.body = {
       code: 0,
       index: event.index,
