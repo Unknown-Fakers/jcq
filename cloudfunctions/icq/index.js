@@ -287,8 +287,9 @@ exports.main = async (event, context) => {
       .filter(stu => stu.student_number && stu.student_number.length && stu.student_number !== ctx.user.student_number)
 
     // 暂不强制使用本人的 tag，给用户一些时间登录 jcq 补充密码，没有上传的用户先使用发起请求用户的 tag
+    const now = new Date()
     students.forEach(student => {
-      student.tag = student.icq_password ? getIcqTag(student.student_number, student.icq_password) : ctx.tag
+      student.tag = student.icq_password ? getIcqTag(student.student_number, student.icq_password, now) : ctx.tag
     })
 
     // 等待所有签到请求完成
