@@ -1,7 +1,11 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
 const TcbRouter = require('tcb-router')
-const request = require('request-promise')
+const fetch = require('make-fetch-happen')
+
+const aes = require('./aes.js')
+const key = aes.enc.Utf8.parse('3812627904101511')
+const iv = aes.enc.Utf8.parse('1111111111111111')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })  // 使用当前云环境
 
@@ -19,51 +23,46 @@ function getIcqReuqestHeaders() {
   }
 }
 
+function encrypt(plaintext) {
+  const bytes = aes.enc.Utf8.parse(plaintext)
+  return aes.AES.encrypt(bytes, key, {
+    iv,
+    mode: aes.mode.CBC,
+    padding: aes.pad.Pkcs7
+  }).ciphertext.toString().toUpperCase()
+}
+
 /**
  * 获取学生的课程表。
  * @param {string} studentNumber 学号
  */
-async function fetchCoursesOfStudent(studentNumber) {
-  return await new Promise((resolve) => {
-    request({
-      url: 'https://icq.cqust.edu.cn/interface/stuclassinfor.action?person_uname=' + studentNumber,
-      method: 'GET',
-      json: true,
-      headers: getIcqReuqestHeaders()
-    })
-      .then((res) => resolve(res))
-      .catch(() => resolve([]))
-  })
-}
+async function fetchCoursesOfStudent(studentNumber, password) {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = now.getMonth() + 1 < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1
+  const day = now.getDate() < 10 ? '0' + now.getDate() : now.getDate()
 
-/**
- * 获取课程的签到信息。
- * @param {string} courseNumber 课程编号
- */
-async function fetchCourseMentionDetail(courseNumber) {
-  return await new Promise((resolve) => {
-    request({
-      url: `https://icq.cqust.edu.cn/interface/minfor.action?cnum=${courseNumber}&nid=1`,
+  const tag = encrypt(`${studentNumber}_${password}_${year}-${month}-${day}`)
+  return await fetch(
+    `https://icq.cqust.edu.cn/interface/stuclassinfor.action?tag=${tag}&person_uname=${studentNumber}`,
+    {
       method: 'GET',
       json: true,
       headers: getIcqReuqestHeaders()
-    })
-      .then((res) => resolve(res))
-      .catch(() => resolve([]))
-  })
+    }
+  )
 }
 
 exports.main = async (event, context) => {
   const app = new TcbRouter({ event })
 
   app.router('bind', async (ctx) => {
-    const { name, number } = event
+    const { number, password } = event
 
-    console.log(event)
-
-    const courses = await fetchCoursesOfStudent(number)
-    if (courses.length === 0) {
-      ctx.body = { code: 1 }  // 无法确认账号信息
+    const courses = await fetchCoursesOfStudent(number, password)
+    const response = await courses.text()
+    if (response.length === 0) {
+      ctx.body = { code: 1 }  // 账号密码不匹配
       return
     }
 
@@ -73,6 +72,12 @@ exports.main = async (event, context) => {
     if (existed.data.length !== 0) {
       if (existed.data[0]._openid === wxContext.OPENID) {
         ctx.body = { code: 0, data: wxContext.OPENID }  // 学号已被自己绑定，重复绑定算成功
+        await db.collection('users').where({ _openid: wxContext.OPENID }).update({
+          data: {
+            student_number: number,
+            icq_password: password
+          }
+        })
         return
       }
 
@@ -80,21 +85,13 @@ exports.main = async (event, context) => {
       return
     }
 
-    for (const course of courses) {
-      const students = await fetchCourseMentionDetail(course.class_num)
-      if (students.length === 0) continue
-      if (students.find((stu) => stu.infor_stuname === name && stu.infor_stunum === number)) {
-        await db.collection('users').where({ _openid: wxContext.OPENID }).update({
-          data: {
-            student_number: number
-          }
-        })
-        ctx.body = { code: 0, data: wxContext.OPENID }  // 绑定成功
-        return
+    await db.collection('users').where({ _openid: wxContext.OPENID }).update({
+      data: {
+        student_number: number,
+        icq_password: password
       }
-    }
-
-    ctx.body = { code: 3 }  // 学号与姓名不匹配
+    })
+    ctx.body = { code: 0, data: wxContext.OPENID }  // 绑定成功
   })
 
   app.router('unbind', async (ctx) => {

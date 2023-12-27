@@ -7,19 +7,24 @@ const db = cloud.database()
 JcqPage({
   data: {
     student: {
-      name: '',
-      number: ''
+      number: '',
+      password: ''
     },
     isFocusToStudentNumber: false,
+    isFocusToPassword: false,
     formRules: [
-      { name: 'name', rules: [{ required: true, message: '请输入姓名' }, { minlength: 2, message: '姓名至少 2 位字符' }] },
-      { name: 'number', rules: [{ required: true, message: '请输入学号' }, { rangelength: [10, 10], message: '学号长度为 10 位' }] }
+      { name: 'number', rules: [{ required: true, message: '请输入学号' }, { rangelength: [10, 10], message: '学号长度为 10 位' }] },
+      { name: 'password', rules: [{ required: true, message: '请输入密码' }, { minlength: 6, message: '密码至少 6 位字符' }] }
     ],
     error: ''
   },
 
-  focusToStudentNumber() {
-    this.setData({ isFocusToStudentNumber: true })
+  onLoad(query: Record<string, string | undefined>) {
+    if (query.number) {
+      this.setData({ 'student.number': query.number, isFocusToPassword: true })
+    } else {
+      this.setData({ isFocusToStudentNumber: true })
+    }
   },
 
   onFormInput(e: WechatMiniprogram.Input) {
@@ -56,7 +61,7 @@ JcqPage({
               default:
                 wx.showModal({
                   title: '绑定失败',
-                  content: '请确保输入的学生信息准确无误且本学期完成了签到操作。',
+                  content: '请确保输入的学生信息准确无误。',
                   showCancel: false
                 })
             }

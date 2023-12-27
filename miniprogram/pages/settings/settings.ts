@@ -4,12 +4,14 @@ const app = getApp<IAppOption>()
 
 JcqPage({
   data: {
-    autoLocateWhenCheckin: true
+    autoLocateWhenCheckin: true,
+    studentNumber: ''
   },
 
   onLoad() {
     this.setData({
-      autoLocateWhenCheckin: app.settings.autoLocateWhenCheckin
+      autoLocateWhenCheckin: app.settings.autoLocateWhenCheckin,
+      studentNumber: app.globalData.user?.student_number || ''
     })
   },
 

@@ -216,7 +216,7 @@ App({
     await this.getUserDetail()
 
     const user = this.globalData.user
-    if (!user || !user.student_number || user.student_number.length !== 10) {
+    if (!user || !user.student_number || user.student_number.length !== 10 || !user.icq_password) {
       wx.redirectTo({ url: '/pages/register/register' })
       return ''
     }

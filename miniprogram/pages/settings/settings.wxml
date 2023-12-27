@@ -1,4 +1,10 @@
 <view class="page" data-weui-theme="{{ theme }}">
+  <mp-cells title="通用">
+    <navigator url="/pages/register/register?number={{ studentNumber }}">
+      <mp-cell title="重设密码" link />
+    </navigator>
+  </mp-cells>
+
   <mp-cells title="签到">
     <mp-cell ext-class="weui-cell_switch cell-desc-with-footer">
       <text>自动获取位置信息</text>

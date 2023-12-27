@@ -50,28 +50,16 @@ function encrypt(plaintext) {
   }).ciphertext.toString().toUpperCase()
 }
 
-/**
- * 获取临时标签，用于访问 icq。
- * @param {Date} time
- * @returns
- */
-async function getTemporaryStudentTag(time) {
-  const user = await db.collection('users').doc('7dc1d50265128b5b04531caa1e21ceb1').get()
-  const { student_number: studentNumber, icq_password: password } = user.data
-
+function getIcqTag(username, password, time) {
+  time = time || new Date()
   const year = time.getFullYear()
   const month = time.getMonth() + 1 < 10 ? '0' + (time.getMonth() + 1) : time.getMonth() + 1
   const day = time.getDate() < 10 ? '0' + time.getDate() : time.getDate()
-
-  return encrypt(`${studentNumber}_${password}_${year}-${month}-${day}`)
+  return encrypt(`${username}_${password}_${year}-${month}-${day}`)
 }
 
 function getTemporaryTeacherTag(time) {
-  const year = time.getFullYear()
-  const month = time.getMonth() + 1 < 10 ? '0' + (time.getMonth() + 1) : time.getMonth() + 1
-  const day = time.getDate() < 10 ? '0' + time.getDate() : time.getDate()
-
-  return encrypt(`2023014_dhl3350080_${year}-${month}-${day}`)
+  return getIcqTag('2023014', 'dhl3350080', time)
 }
 
 exports.main = async (event, context) => {
@@ -89,14 +77,14 @@ exports.main = async (event, context) => {
     }
 
     ctx.user = userRecords.data[0]
-    ctx.tag = await getTemporaryStudentTag(new Date())
     await next()
   })
 
   // 检查是否完善了学号信息
   app.router(['courses/mine', 'checkin', 'records'], async (ctx, next) => {
-    const studentNumber = ctx.user.student_number
-    if (studentNumber && studentNumber.length) {
+    const { student_number: studentNumber, icq_password: password } = ctx.user
+    if (studentNumber && studentNumber.length && password && password.length) {
+      ctx.tag = getIcqTag(studentNumber, password)
       await next()
     } else {
       ctx.body = { code: 1 }  // 用户信息不完善
@@ -298,9 +286,14 @@ exports.main = async (event, context) => {
       // 没有绑定学号的不签，提交本次请求的用户已经签好了，都筛掉
       .filter(stu => stu.student_number && stu.student_number.length && stu.student_number !== ctx.user.student_number)
 
+    // 暂不强制使用本人的 tag，给用户一些时间登录 jcq 补充密码，没有上传的用户先使用发起请求用户的 tag
+    students.forEach(student => {
+      student.tag = student.icq_password ? getIcqTag(student.student_number, student.icq_password) : ctx.tag
+    })
+
     // 等待所有签到请求完成
     const allResults = await Promise.all(students.map(student => new Promise((resolve, reject) => {
-      fetch(`https://icq.cqust.edu.cn/interface/fdqmentionbyxh.action?tag=${ctx.tag}&cnum=${course}-${teacher}-${code}&xh=${student.student_number}&location=暂无地理位置`)
+      fetch(`https://icq.cqust.edu.cn/interface/fdqmentionbyxh.action?tag=${student.tag}&cnum=${course}-${teacher}-${code}&xh=${student.student_number}&location=暂无地理位置`)
         .then(res => res.text())
         .catch(err => reject(err))
         .then(code => resolve(code))
@@ -316,12 +309,12 @@ exports.main = async (event, context) => {
         }).then(() => resolve()).catch(() => { /* ignore */ })
       })]
       for (let i = 0; i < allResults.length; i++) {
-        if (allResults[i] === '-2' || allResults[i] === '-1' || allResults[i] === '0') {
+        if (!allResults[i].length || allResults[i] === '-2' || allResults[i] === '-1' || allResults[i] === '0') {
           failed.push({ student_number: students[i].student_number, code: allResults[i] })
         } else {
           const g = addRandomOffsetApproximately(geo, 5)
           locationUpdates.push(new Promise(resolve => {
-            fetch(`https://icq.cqust.edu.cn/interface/updatelocationbyxh.action?tag=${ctx.tag}&cnum=${course}&xh=${students[i].student_number}&location=纬度:${g.lat}经度:${g.lng}`, {
+            fetch(`https://icq.cqust.edu.cn/interface/updatelocationbyxh.action?tag=${students[i].tag}&cnum=${course}&xh=${students[i].student_number}&location=纬度:${g.lat}经度:${g.lng}`, {
               headers: { 'Content-Type': 'application/json' }
             }).then(() => resolve()).catch(() => { /* ignore */ })
           }))
@@ -331,7 +324,7 @@ exports.main = async (event, context) => {
     } else {
       // 没有位置信息，只统计失败信息
       for (let i = 0; i < allResults.length; i++) {
-        if (allResults[i] === '-2' || allResults[i] === '-1' || allResults[i] === '0') {
+        if (!allResults[i].length || allResults[i] === '-2' || allResults[i] === '-1' || allResults[i] === '0') {
           failed.push({ student_number: students[i].student_number, code: allResults[i] })
         }
       }
