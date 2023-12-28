@@ -5,6 +5,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
 const db = cloud.database()
 const _ = db.command
+const $ = _.aggregate
 
 exports.main = async (event, context) => {
   const app = new TcbRouter({ event })
@@ -17,7 +18,25 @@ exports.main = async (event, context) => {
 
     try {
       const membersCount = await db.collection('batch_members').where({ batch_id: event.id }).count()
-      ctx.body = { code: 0, data: membersCount.total }
+
+      // 查询所有需要签到的学生
+      const activeMembersCount = (await db.collection('batch_members').aggregate()
+        .project({ _id: 0, batch_id: 1, _openid: 1, pause_checkin_until: 1 })
+        .match({ batch_id: event.id, pause_checkin_until: _.exists(false).or(_.lt(new Date())) })
+        .group({ _id: '$_openid' })
+        .lookup({
+          from: 'users',
+          localField: '_id',
+          foreignField: '_openid',
+          as: 'user'
+        })
+        .replaceRoot({ newRoot: $.arrayElemAt(['$user', 0]) })
+        .match({ student_number: _.exists(true), icq_password: _.exists(true) })
+        .count('total')
+        .end())
+        .list
+
+      ctx.body = { code: 0, data: { total: membersCount.total, activated: activeMembersCount[0].total } }
     } catch (err) {
       console.error(err)
       ctx.body = { code: 1 }

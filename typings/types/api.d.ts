@@ -31,3 +31,8 @@ declare interface CheckinResult {
   succeed: number
   failed: { student_number: string, code: string }[]
 }
+
+declare interface BatchMembersCount {
+  total: number
+  activated: number
+}

@@ -14,6 +14,7 @@ JcqPage({
     own: false,
     selectByDefault: true,
     membersCount: 0,
+    activatedMembersCount: 0,
     pauseCheckinForMe: { loading: true, until: '' },
 
     datetimePickerRange: [],
@@ -63,9 +64,9 @@ JcqPage({
       const membersCount = (await cloud.callFunction({
         name: 'batch',
         data: { $url: 'members/count', id }
-      })).result as ApiResponse<number>
+      })).result as ApiResponse<BatchMembersCount>
       if (membersCount && membersCount.code === 0) {
-        this.setData({ membersCount: membersCount.data })
+        this.setData({ membersCount: membersCount.data!.total, activatedMembersCount: membersCount.data!.activated })
       }
     })()
   },

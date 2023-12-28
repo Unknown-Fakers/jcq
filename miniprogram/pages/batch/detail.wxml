@@ -12,6 +12,10 @@
       <view wx:if="{{ membersCount }}" slot="footer">{{ membersCount }}</view>
       <view wx:else slot="footer" class="weui-loading" />
     </mp-cell>
+    <mp-cell title="预计正常签到成员数">
+      <view wx:if="{{ membersCount }}" slot="footer">{{ activatedMembersCount }}</view>
+      <view wx:else slot="footer" class="weui-loading" />
+    </mp-cell>
   </mp-cells>
 
   <mp-cells>
