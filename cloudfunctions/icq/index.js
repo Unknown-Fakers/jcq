@@ -331,6 +331,14 @@ exports.main = async (event, context) => {
       }
     }
 
+    // 清除密码错误的学生密码，下次打开 Jcq 时自然会要求重新输入密码，搭子圈统计预计成功签到人数时不会统计这些学生
+    const passwordErrorStudents = failed.filter(f => !f.code.length).map(f => f.student_number)
+    if (passwordErrorStudents.length) {
+      await db.collection('users')
+        .where({ student_number: _.in(passwordErrorStudents) })
+        .update({ data: { icq_password: _.remove() } })
+    }
+
     ctx.body = { code: 0, data: { succeed: students.length - failed.length + 1, failed } }
   })
 
