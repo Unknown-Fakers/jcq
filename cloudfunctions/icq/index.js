@@ -286,10 +286,10 @@ exports.main = async (event, context) => {
       // 没有绑定学号的不签，提交本次请求的用户已经签好了，都筛掉
       .filter(stu => stu.student_number && stu.student_number.length && stu.student_number !== ctx.user.student_number)
 
-    // 暂不强制使用本人的 tag，给用户一些时间登录 jcq 补充密码，没有上传的用户先使用发起请求用户的 tag
+    // 强制使用本人的 tag，没有填写密码的用户让他签到失败
     const now = new Date()
     students.forEach(student => {
-      student.tag = student.icq_password ? getIcqTag(student.student_number, student.icq_password, now) : ctx.tag
+      student.tag = student.icq_password ? getIcqTag(student.student_number, student.icq_password, now) : ''
     })
 
     // 等待所有签到请求完成
