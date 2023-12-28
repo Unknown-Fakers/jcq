@@ -1,9 +1,9 @@
 <view class="page" data-weui-theme="{{ theme }}">
   <mp-toptips msg="{{ error }}" type="error" show="{{ error }}"></mp-toptips>
 
-  <mp-form-page title="绑定校园信息" subtitle="请输入您在重庆科技学院的学号信息，一个学号只可绑定一个微信，非本校学生不可使用该程序。">
+  <mp-form-page title="绑定校园信息" subtitle="请输入您在重庆科技大学的账号信息，一个学号只可绑定一个微信，非本校学生不可使用该程序。">
     <mp-form id="form" models="{{ student }}" rules="{{ formRules }}">
-      <mp-cells title="学生信息">
+      <mp-cells>
         <label>
           <mp-cell title="学号" prop="number">
             <input class="weui-input" placeholder="请输入本人学号" type="number" focus="{{ isFocusToStudentNumber }}" data-field="number" bind:input="onFormInput" value="{{ student.number }}" />
