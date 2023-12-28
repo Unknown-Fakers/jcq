@@ -31,7 +31,7 @@
           </view>
         </view>
       </view>
-    </view>  
+    </view>
     <view class="weui-form-preview__bd">
       <view class="weui-form-preview__item">
         <label class="weui-form-preview__label">签到时间</label>
@@ -55,7 +55,7 @@
       </view>
     </view>
     <view class="weui-form-preview__ft">
-      <view class="weui-form-preview__btn weui-form-preview__btn_default" bind:tap="navigateToDetail" data-index="{{index}}">更多签到记录</view>
+      <view class="weui-form-preview__btn weui-form-preview__btn_default" bind:tap="navigateToDetail" data-index="{{index}}">出勤详情</view>
       <view class="weui-form-preview__btn weui-form-preview__btn_primary" bind:tap="navigateToLocation" data-index="{{index}}">定位详情</view>
     </view>
   </view>
