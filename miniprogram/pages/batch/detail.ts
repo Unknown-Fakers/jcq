@@ -23,6 +23,7 @@ JcqPage({
 
   onLoad(options: Record<string, string | undefined>) {
     if (!options.id) return
+    this.setData({ id: options.id })
     this.fetchBatchDetail(options.id)
     this.initPauseCheckinPicker()
   },
@@ -60,15 +61,17 @@ JcqPage({
     })();
 
     // 获取远程数据
-    (async () => {
-      const membersCount = (await cloud.callFunction({
-        name: 'batch',
-        data: { $url: 'members/count', id }
-      })).result as ApiResponse<BatchMembersCount>
-      if (membersCount && membersCount.code === 0) {
-        this.setData({ membersCount: membersCount.data!.total, activatedMembersCount: membersCount.data!.activated })
-      }
-    })()
+    this.fetchBatchMembersCount()
+  },
+
+  async fetchBatchMembersCount() {
+    const membersCount = (await cloud.callFunction({
+      name: 'batch',
+      data: { $url: 'members/count', id: this.data.id }
+    })).result as ApiResponse<BatchMembersCount>
+    if (membersCount && membersCount.code === 0) {
+      this.setData({ membersCount: membersCount.data!.total, activatedMembersCount: membersCount.data!.activated })
+    }
   },
 
   onDefaultSelectChanged(e: WechatMiniprogram.SwitchChange) {
@@ -247,6 +250,7 @@ JcqPage({
       success: () => {
         this.batch.pause_checkin_for_me_until = until
         this.setData({ pauseCheckinForMe: { loading: false, until: untilDayjs.format('YYYY-MM-DD HH:mm') } })
+        this.fetchBatchMembersCount()
       },
       fail: (err) => {
         console.error(err)
@@ -269,6 +273,7 @@ JcqPage({
           success: () => {
             this.batch.pause_checkin_for_me_until = undefined
             this.setData({ pauseCheckinForMe: { loading: false, until: '' } })
+            this.fetchBatchMembersCount()
           },
           fail: (err) => {
             console.error(err)
