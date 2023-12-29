@@ -465,19 +465,22 @@ exports.main = async (event, context) => {
     const leave = []
     const absent = []
 
+    console.log(ctx.details)
+
     for (let i = 0; i < ctx.details.length; i++) {
       ctx.details[i].infor_type = Number(ctx.details[i].infor_type)
+      const modified = ctx.details[i].infor_location === '教师操作'
       if (ctx.details[i].infor_type === 0) {
-        attended.push({ "name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type })
+        attended.push({ name: ctx.details[i].infor_stuname, status: ctx.details[i].infor_type, modified })
       }
       else if (ctx.details[i].infor_type === 1) {
-        late.push({ "name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type })
+        late.push({ name: ctx.details[i].infor_stuname, status: ctx.details[i].infor_type, modified })
       }
       else if (ctx.details[i].infor_type === 2) {
-        leave.push({ "name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type })
+        leave.push({ name: ctx.details[i].infor_stuname, status: ctx.details[i].infor_type, modified })
       }
       else if (ctx.details[i].infor_type === -1) {
-        absent.push({ "name": ctx.details[i].infor_stuname, "status": ctx.details[i].infor_type })
+        absent.push({ name: ctx.details[i].infor_stuname, status: ctx.details[i].infor_type, modified })
       }
     }
 

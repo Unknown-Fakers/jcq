@@ -4,5 +4,21 @@
   flex: 1;
   position: relative;
   background-color: var(--weui-BG-0);
-  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.cells-title {
+  background-color: var(--weui-BG-0);
+  display: flex;
+  width: 100vw;
+
+  .weui-cells__title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    icon {
+      margin-right: 10px;
+    }
+  }
 }
