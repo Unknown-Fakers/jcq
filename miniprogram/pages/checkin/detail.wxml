@@ -5,7 +5,7 @@
         <view class="weui-cells__title"><icon type="warn" color="#ffc300" size="20" />缺勤 {{ absent.length }} 人</view>
       </view>
     </mp-sticky>
-    <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cells weui-cells_after-title weui-cells_no-top-margin">
       <mp-cell wx:for="{{ absent }}" wx:key="index" ext-class="{{ index ? 'weui-cell_wxss' : '' }}">
         <view>{{ item.name }}</view>
         <view slot="footer" wx:if="{{ item.modified }}">教师操作</view>
@@ -16,12 +16,13 @@
   <view class="weui-cells__group" wx:if="{{ leave.length }}">
     <mp-sticky>
       <view class="cells-title">
-        <view class="weui-cells__title"><icon type="info" size="20" />请假 {{ leave.length }} 人（均为教师操作）</view>
+        <view class="weui-cells__title"><icon type="info" size="20" />请假 {{ leave.length }} 人</view>
       </view>
     </mp-sticky>
-    <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cells weui-cells_after-title weui-cells_no-top-margin">
       <mp-cell wx:for="{{ leave }}" wx:key="index" ext-class="{{ index ? 'weui-cell_wxss' : '' }}">
         <view>{{ item.name }}</view>
+        <view slot="footer" wx:if="{{ item.modified }}">教师操作</view>
       </mp-cell>
     </view>
   </view>
@@ -29,12 +30,13 @@
   <view class="weui-cells__group" wx:if="{{ late.length }}">
     <mp-sticky>
       <view class="cells-title">
-        <view class="weui-cells__title"><icon type="waiting" size="20" />迟到 {{ late.length }} 人（均为教师操作）</view>
+        <view class="weui-cells__title"><icon type="waiting" size="20" />迟到 {{ late.length }} 人</view>
       </view>
     </mp-sticky>
-    <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cells weui-cells_after-title weui-cells_no-top-margin">
       <mp-cell wx:for="{{ late }}" wx:key="index" ext-class="{{ index ? 'weui-cell_wxss' : '' }}">
         <view>{{ item.name }}</view>
+        <view slot="footer" wx:if="{{ item.modified }}">教师操作</view>
       </mp-cell>
     </view>
   </view>
@@ -45,7 +47,7 @@
         <view class="weui-cells__title"><icon type="success" size="20" />出勤 {{ attended.length }} 人</view>
       </view>
     </mp-sticky>
-    <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cells weui-cells_after-title weui-cells_no-top-margin">
       <mp-cell wx:for="{{ attended }}" wx:key="index" ext-class="{{ index ? 'weui-cell_wxss' : '' }}">
         <view>{{ item.name }}</view>
         <view slot="footer" wx:if="{{ item.modified }}">教师操作</view>
