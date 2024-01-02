@@ -199,7 +199,7 @@ App({
   },
 
   async getUserDetail(refresh = false) {
-    if (!this.globalData.user || refresh) {
+    if (!this.globalData.user || !this.globalData.user._id || refresh) {
       // 防止多次请求
       if (!this._userDetailFetchPromise) {
         this._userDetailFetchPromise = this._fetchUserDetail().finally(() => { this._userDetailFetchPromise = null })
@@ -213,10 +213,9 @@ App({
    * 获取学号，如果用户没有绑定学号，则跳转到注册页面，返回空字符串。
    */
   async _getUserStudentNumber() {
-    await this.getUserDetail()
-
-    const user = this.globalData.user
+    const user = await this.getUserDetail()
     if (!user || !user.student_number || user.student_number.length !== 10 || !user.icq_password) {
+      console.log('用户信息未完善，跳转到绑定页')
       wx.redirectTo({ url: '/pages/register/register' })
       return ''
     }
