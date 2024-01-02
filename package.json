@@ -6,7 +6,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "miniprogram-api-typings": "^3.12.1"
+    "miniprogram-api-typings": "^3.12.2"
   },
   "main": ".eslintrc.js",
   "description": "",
