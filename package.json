@@ -13,6 +13,7 @@
   "dependencies": {
     "@miniprogram-component-plus/sticky": "^1.0.1",
     "dayjs": "^1.11.10",
-    "miniprogram-computed": "^4.4.0"
+    "miniprogram-computed": "^4.4.0",
+    "weui-miniprogram": "^1.3.1"
   }
 }

@@ -3,7 +3,7 @@
   <view class="weui-form-preview" wx:for="{{records}}" wx:for-item="record" wx:key="idx">
     <view class="weui-form-preview__hd">
       <view class="weui-form-preview__item">
-        <label class="weui-form-preview__label checkin-result__title" >签到结果</label>
+        <label class="weui-form-preview__label">签到结果</label>
         <view class="checkin-result">
           <view wx:if="{{record.status === 0}}" class="checkin-result__icon">
             <icon type="success" size="40"></icon>

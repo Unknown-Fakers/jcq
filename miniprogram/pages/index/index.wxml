@@ -9,8 +9,10 @@
   <block wx:if="{{ showSkeleton }}">
     <view class="weui-form-preview" wx:for="{{ 'jcq' }}" wx:key="index">
       <view class="weui-form-preview__hd">
-        <view class="weui-form-preview__label"><skeleton height="20px" /></view>
-        <view class="weui-form-preview__value_in-hd"><skeleton width="10em" height="20px" /></view>
+        <view class="weui-form-preview__item">
+          <view class="weui-form-preview__label"><skeleton width="4em" height="20px" /></view>
+          <view class="weui-form-preview__value_in-hd"><skeleton width="10em" height="20px" /></view>
+        </view>
       </view>
       <view class="weui-form-preview__bd">
         <view class="weui-form-preview__item">
@@ -19,7 +21,7 @@
         </view>
         <view class="weui-form-preview__item">
           <view class="weui-form-preview__label"><skeleton width="4.2em" height="16px" /></view>
-          <view class="weui-form-preview__value">
+          <view class="weui-form-preview__value course-schedules">
             <view><skeleton width="16em" height="16px" skeleton-space="0" /></view>
             <view><skeleton width="16em" height="16px" skeleton-space="0" /></view>
           </view>
@@ -52,8 +54,10 @@
 <template name="course">
   <view class="weui-form-preview" mark:courseNumber="{{ idx }}">
     <view class="weui-form-preview__hd">
-      <view class="weui-form-preview__label">课程名称</view>
-      <view class="weui-form-preview__value_in-hd">{{ courses[idx][0].name }}</view>
+      <view class="weui-form-preview__item">
+        <view class="weui-form-preview__label">课程名称</view>
+        <view class="weui-form-preview__value_in-hd">{{ courses[idx][0].name }}</view>
+      </view>
     </view>
     <view class="weui-form-preview__bd">
       <view class="weui-form-preview__item">
@@ -65,7 +69,7 @@
       </view>
       <view class="weui-form-preview__item" wx:if="{{ courses[idx][0].detail && courses[idx][0].detail.length }}">
         <view class="weui-form-preview__label">日程安排</view>
-        <view class="weui-form-preview__value">
+        <view class="weui-form-preview__value course-schedules">
           <view wx:for="{{ courses[idx][0].detail }}" wx:key="index" class="course {{ (courses[idx][0].in_this_week && courses[idx][0].in_this_week[index] ? 'course--this-week ' : '') + (courses[idx][0].today && courses[idx][0].today[index] ? 'course--today ' : '') }}">{{ item }}</view>
         </view>
       </view>

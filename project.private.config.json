@@ -10,16 +10,16 @@
     "miniprogram": {
       "list": [
         {
-          "name": "注册",
-          "pathName": "pages/register/register",
-          "query": "",
+          "name": "签到成功结果页",
+          "pathName": "pages/checkin/result",
+          "query": "succeed=1&_failed=[]&failed=[{\"student_number\":\"2022520905\",\"code\":\"-1\"},{\"student_number\":\"2022520896\",\"code\":\"0\"},{\"student_number\":\"2022520900\",\"code\":\"-2\"},{\"student_number\":\"2022520966\",\"code\":\"110\"},{\"student_number\":\"2022520902\",\"code\":\"\"}]",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "签到成功结果页",
-          "pathName": "pages/checkin/result",
-          "query": "succeed=1&_failed=[]&failed=[{\"student_number\":\"2022520905\",\"code\":\"-1\"},{\"student_number\":\"2022520896\",\"code\":\"0\"},{\"student_number\":\"2022520900\",\"code\":\"-2\"},{\"student_number\":\"2022520966\",\"code\":\"110\"}]",
+          "name": "注册",
+          "pathName": "pages/register/register",
+          "query": "",
           "launchMode": "default",
           "scene": null
         }

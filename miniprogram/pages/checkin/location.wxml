@@ -1,11 +1,13 @@
+<mp-navigation-bar title="定位详情" data-weui-theme="{{ theme }}" />
+
 <view class="page" data-weui-theme="{{ theme }}">
-    <map wx:if="{{ centerLocation.lat && centerLocation.lng}}"
-      id="map" 
-      style="width: 100vw; height: 100vh;" 
-      scale="18" 
-      latitude="{{ centerLocation.lat }}" 
-      longitude="{{ centerLocation.lng }}" 
-      markers="{{ markers }}"
-      >
-    </map>
+  <map wx:if="{{ centerLocation.lat && centerLocation.lng}}"
+    id="map"
+    style="width: 100vw; height: 100vh;"
+    scale="18"
+    latitude="{{ centerLocation.lat }}"
+    longitude="{{ centerLocation.lng }}"
+    markers="{{ markers }}"
+    >
+  </map>
 </view>

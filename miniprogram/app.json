@@ -50,14 +50,17 @@
   "style": "v2",
   "darkmode": true,
   "themeLocation": "theme.json",
+  "componentFramework": "glass-easel",
+  "rendererOptions": {
+    "skyline": {
+      "defaultDisplayBlock": false
+    }
+  },
   "window": {
     "backgroundTextStyle": "@bgTextStyle",
     "navigationBarBackgroundColor": "@navBgColor",
     "navigationBarTitleText": "职有校园",
     "navigationBarTextStyle": "@navTextStyle"
   },
-  "sitemapLocation": "sitemap.json",
-  "useExtendedLib": {
-    "weui": true
-  }
+  "sitemapLocation": "sitemap.json"
 }
