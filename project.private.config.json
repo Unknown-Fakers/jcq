@@ -5,7 +5,7 @@
     "compileHotReLoad": true,
     "skylineRenderEnable": true
   },
-  "libVersion": "3.2.5",
+  "libVersion": "3.3.0",
   "condition": {
     "miniprogram": {
       "list": [

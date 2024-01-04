@@ -43,19 +43,7 @@ JcqPage({
     } else if (result?.code === 0 && !result?.data) {
       wx.showToast({ icon: 'error', title: '无任何位置信息' })
     } else {
-      const checkinInfo: any = result?.data
-      if (checkinInfo.attended) {
-        this.setData({ attended: checkinInfo.attended })
-      }
-      if (checkinInfo.absent) {
-        this.setData({ absent: checkinInfo.absent })
-      }
-      if (checkinInfo.late) {
-        this.setData({ late: checkinInfo.late })
-      }
-      if (checkinInfo.leave) {
-        this.setData({ leave: checkinInfo.leave })
-      }
+      this.setData({ ...result.data })
     }
     console.log(this.data)
   }

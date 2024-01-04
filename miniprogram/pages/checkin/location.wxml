@@ -1,13 +1,33 @@
 <mp-navigation-bar title="定位详情" data-weui-theme="{{ theme }}" />
-
 <view class="page" data-weui-theme="{{ theme }}">
-  <map wx:if="{{ centerLocation.lat && centerLocation.lng}}"
-    id="map"
-    style="width: 100vw; height: 100vh;"
-    scale="18"
-    latitude="{{ centerLocation.lat }}"
-    longitude="{{ centerLocation.lng }}"
-    markers="{{ markers }}"
-    >
-  </map>
+  <map wx:if="{{ !noLocationData }}" id="map" style="width: 100vw; height: 100vh;" scale="{{ mapScale }}" latitude="{{ centerLocation.lat }}" longitude="{{ centerLocation.lng }}" markers="{{ markers }}" bind:markertap="onMarkerTap" />
 </view>
+<draggable-sheet class="roster" style="height: {{ sheetHeight }}px" min-child-size="{{ 0.2 }}" initial-child-size="{{ 0.4 }}" snap snap-sizes="{{ [0.4] }}" worklet:onsizeupdate="onSheetSizeUpdate" data-weui-theme="{{ theme }}">
+  <scroll-view class="scrollable" scroll-y type="custom" associative-container="draggable-sheet" show-scrollbar="{{ false }}" enable-passive scroll-into-view-within-extent scroll-top="{{ backToTop ? 0 : undefined }}">
+    <sticky-section>
+      <sticky-header>
+        <view class="bar">
+          <view class="indicator {{ renderer }}" bind:tap="collapseRosterSheet">
+            <view class="arrow">
+              <mp-icon icon="arrow" size="{{ 10 }}" color="{{ theme === 'dark' ? 'rgba(255,255,255,.3)' : 'rgba(0,0,0,.3)' }}" />
+            </view>
+          </view>
+        </view>
+        <view class="title">位置名单（共 {{ markers.length }} 人）</view>
+      </sticky-header>
+      <list-view>
+        <mp-cells wx:if="{{ currentMarkerId !== null }}" ext-class="current-student" title="当前选中">
+          <mp-cell title="{{ markers[currentMarkerId].title }}" />
+        </mp-cells>
+
+        <mp-cells wx:if="{{ !noLocationData }}" ext-class="other-students" title="其他">
+          <mp-cell wx:for="{{ markers }}" wx:key="id" list-item wx:if="{{ item.id !== currentMarkerId }}" title="{{ item.title }}" link hover bind:tap="locateToStudent" data-marker-id="{{ item.id }}" />
+        </mp-cells>
+
+        <view wx:else class="no-location-placeholder" style="height: {{ sheetHeight - 83 }}px">无数据</view>
+
+        <view class="safe-area" />
+      </list-view>
+    </sticky-section>
+  </scroll-view>
+</draggable-sheet>

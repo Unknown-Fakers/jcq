@@ -50,7 +50,8 @@
       "typescript",
       "less"
     ],
-    "ignoreUploadUnusedFiles": true
+    "ignoreUploadUnusedFiles": true,
+    "compileWorklet": true
   },
   "compileType": "miniprogram",
   "libVersion": "2.19.1",

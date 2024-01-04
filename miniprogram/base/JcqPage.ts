@@ -28,6 +28,8 @@ const newThemeBehavior = Behavior({
       if (app.watchThemeChange) {
         app.watchThemeChange(this._changeTheme)
       }
+      // @ts-ignore
+      this.setData({ renderer: this.renderer ?? 'webview' })
     },
     detached(this: BehaviorExtend) {
       const app = getApp<IAppOption>()
@@ -41,6 +43,9 @@ const newThemeBehavior = Behavior({
       type: String,
       value: 'light'
     }
+  },
+  data: {
+    renderer: 'webview'
   }
 })
 

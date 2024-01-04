@@ -1,20 +1,89 @@
 .page {
-    box-sizing: border-box;
-    width: 100%;
-    flex: 1;
-    position: relative;
-    background-color: var(--weui-BG-0);
-    margin: 0;
+  box-sizing: border-box;
+  width: 100%;
+  flex: 1;
+  position: relative;
+  background-color: var(--weui-BG);
+  margin: 0;
+}
+
+.roster {
+  position: absolute;
+  bottom: 0;
+  width: 100vw;
+
+  .scrollable {
+    height: 100%;
+    overflow: hidden;
+
+    .bar {
+      min-height: 0;
+      padding: 12px 16px 16px;
+      background-color: var(--weui-BG-2);
+      border-top-left-radius: 14px;
+      border-top-right-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .indicator {
+        height: 4px;
+        width: 40px;
+        background-color: var(--weui-FG-3);
+        border-radius: 2px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &.webview {
+          // display: none;
+          height: 16px;
+          border-radius: 12px;
+        }
+
+        .arrow {
+          transform: translateX(2px) rotate(90deg);
+          display: block;
+          overflow: hidden;
+        }
+      }
+    }
+
+    .title {
+      padding: 0 16px 25px;
+      font-size: 15px;
+      font-weight: 500;
+      background-color: var(--weui-BG-2);
+      border-bottom: 1px solid var(--weui-FG-5);
+    }
+
+    .current-student,
+    .other-students {
+      background-color: var(--weui-BG-2);
+    }
+
+    .current-student {
+      margin-top: 0;
+
+      &::before {
+        display: none;
+      }
+    }
+
+    .safe-area {
+      height: env(safe-area-inset-bottom);
+      width: 100%;
+      background-color: var(--weui-BG-2);
+    }
   }
-.customCallout {
-    box-sizing: border-box;
-    background-color: #fff; 
-    border: 1px solid #ccc;
-    border-radius: 30px;
-    width: 150px;
-    height: 40px;
-    display: inline-flex;
-    padding: 5px 20px;
-    justify-content: center;
-    align-items: center;
-  }  
+}
+
+.no-location-placeholder {
+  background-color: var(--weui-BG-2);
+  font-size: 24px;
+  font-weight: 700;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

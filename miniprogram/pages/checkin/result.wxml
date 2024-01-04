@@ -12,8 +12,8 @@
       </view>
       <view class="weui-msg__custom-area" wx:if="{{ failed.length }}">
         <mp-cells>
-          <mp-cell wx:for="{{ failed }}" value="{{ item.student_number }}">
-            <view wx:if="{{ item.code.length === 0 }}">密码错误</view>
+          <mp-cell wx:for="{{ failed }}" wx:key="student_number" value="{{ item.student_number }}">
+            <view wx:if="{{ item.code.length === 0 }}" slot="footer">密码错误</view>
             <view wx:elif="{{ item.code === '-1' || item.code === '0' }}" slot="footer">签到码无效</view>
             <view wx:elif="{{ item.code === '-2' }}" slot="footer">登录设备过多</view>
             <view wx:else slot="footer">未知错误码：{{ item.code }}</view>

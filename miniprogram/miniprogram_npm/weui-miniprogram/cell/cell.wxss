@@ -2,7 +2,7 @@
   display: flex;
 }
 .weui-cell::before {
-  display: flex !important;
+  display: flex;
 }
 
 
