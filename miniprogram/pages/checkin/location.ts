@@ -9,6 +9,7 @@ const sheetHeight = windowHeight - statusBarHeight - 44
 ThemedComponentWithComputed({
   data: {
     noLocationData: false,
+    fixFullscreenRoster: false,
     centerLocation: {
       lat: 0,
       lng: 0,
@@ -97,9 +98,14 @@ ThemedComponentWithComputed({
         wx.showToast({ icon: 'error', title: '服务器未响应' })
         return
       } else if (result?.code === 0 && (!result?.data || result?.data?.length === 0)) {
+        this.clearAnimation('.indicator')
+        this.clearAnimation('.arrow')
         this.setData({ noLocationData: true })
         // @ts-ignore
         this.roster.scrollTo({ size: 1.0, duration: 500 })
+        setTimeout(() => {
+          this.setData({ fixFullscreenRoster: true })
+        }, 500)
       } else {
         const locationData: any = result?.data
         console.log(locationData)

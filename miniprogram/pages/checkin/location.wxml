@@ -2,13 +2,13 @@
 <view class="page" data-weui-theme="{{ theme }}">
   <map wx:if="{{ !noLocationData }}" id="map" style="width: 100vw; height: 100vh;" scale="{{ mapScale }}" latitude="{{ centerLocation.lat }}" longitude="{{ centerLocation.lng }}" markers="{{ markers }}" bind:markertap="onMarkerTap" />
 </view>
-<draggable-sheet class="roster" style="height: {{ sheetHeight }}px" min-child-size="{{ 0.2 }}" initial-child-size="{{ 0.4 }}" snap snap-sizes="{{ [0.4] }}" worklet:onsizeupdate="onSheetSizeUpdate" data-weui-theme="{{ theme }}">
+<draggable-sheet class="roster" style="height: {{ sheetHeight }}px" min-child-size="{{ fixFullscreenRoster ? 1.0 : 0.2 }}" initial-child-size="{{ 0.4 }}" snap snap-sizes="{{ [0.4] }}" worklet:onsizeupdate="onSheetSizeUpdate" data-weui-theme="{{ theme }}">
   <scroll-view class="scrollable" scroll-y type="custom" associative-container="draggable-sheet" show-scrollbar="{{ false }}" enable-passive scroll-into-view-within-extent scroll-top="{{ backToTop ? 0 : undefined }}">
     <sticky-section>
       <sticky-header>
         <view class="bar">
-          <view class="indicator {{ renderer }}" bind:tap="collapseRosterSheet">
-            <view class="arrow">
+          <view class="indicator {{ renderer }} {{ noLocationData ? 'hidden' : '' }}" bind:tap="collapseRosterSheet">
+            <view wx:if="{{ !noLocationData }}" class="arrow">
               <mp-icon icon="arrow" size="{{ 10 }}" color="{{ theme === 'dark' ? 'rgba(255,255,255,.3)' : 'rgba(0,0,0,.3)' }}" />
             </view>
           </view>
