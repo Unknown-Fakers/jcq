@@ -117,11 +117,7 @@ ThemedComponentWithComputed({
             iconPath: '/asset/ic_location_mark.png',
             width: 40,
             height: 40,
-            title: locationData[i].name,
-            callout: {
-              content: locationData[i].name,
-              display: 'BYCLICK'
-            }
+            title: locationData[i].name
           })
         }
 
@@ -199,9 +195,15 @@ ThemedComponentWithComputed({
       // @ts-ignore
       this.mapScale.value = scale
       this.getMapContext().then((map: WechatMiniprogram.MapContext) => {
-        map.getCenterLocation({
-          success: (res) => {
-            this.setData({ mapScale: scale, centerLocation: { lat: res.latitude, lng: res.longitude } })
+        map.getScale({
+          success: (s) => {
+            if ((scale <= 16 && s.scale > 16) || (scale >= 18 && s.scale < 18)) {
+              map.getCenterLocation({
+                success: (res) => {
+                  this.setData({ mapScale: scale, centerLocation: { lat: res.latitude, lng: res.longitude } })
+                }
+              })
+            }
           }
         })
       })
