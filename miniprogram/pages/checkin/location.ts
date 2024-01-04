@@ -53,17 +53,12 @@ ThemedComponentWithComputed({
 
       const query = this.createSelectorQuery()
       query.select('.roster').node()
-      query.select('#map').context()
       query.exec((res) => {
         console.log(res)
         if (!res) return
         if (res[0] && res[0].node) {
           // @ts-ignore
           this.roster = res[0].node
-        }
-        if (res[1] && res[1].context) {
-          // @ts-ignore
-          this.map = res[1].context
         }
       })
     }
@@ -138,6 +133,8 @@ ThemedComponentWithComputed({
           }
         })
         console.log(this.data.markers)
+
+        this.getMapContext()
       }
     },
 
@@ -170,7 +167,9 @@ ThemedComponentWithComputed({
       const markerId = e.currentTarget.dataset.markerId
       const marker = this.data.markers[markerId]
       // @ts-ignore
-      this.map.moveToLocation({ ...marker })
+      this.getMapContext().then((map: WechatMiniprogram.MapContext) => {
+        map.moveToLocation({ ...marker })
+      })
       // @ts-ignore
       this.roster.scrollTo({ size: 0.4 })
       this.setData({ currentMarkerId: markerId, backToTop: true, ...this.getShowHideMarkerCalloutData(markerId) })
@@ -199,7 +198,30 @@ ThemedComponentWithComputed({
     setMapScale(scale: number) {
       // @ts-ignore
       this.mapScale.value = scale
-      this.setData({ mapScale: scale })
+      this.getMapContext().then((map: WechatMiniprogram.MapContext) => {
+        map.getCenterLocation({
+          success: (res) => {
+            this.setData({ mapScale: scale, centerLocation: { lat: res.latitude, lng: res.longitude } })
+          }
+        })
+      })
+    },
+
+    getMapContext(): Promise<WechatMiniprogram.MapContext> {
+      // @ts-ignore
+      if (this.map) return Promise.resolve(this.map)
+
+      return new Promise((resolve) => {
+        const query = this.createSelectorQuery()
+        query.select('#map').context().exec((res) => {
+          if (res && res[0] && res[0].context) {
+            // @ts-ignore
+            this.map = res[0].context
+            // @ts-ignore
+            resolve(this.map)
+          }
+        })
+      })
     }
   }
 })
