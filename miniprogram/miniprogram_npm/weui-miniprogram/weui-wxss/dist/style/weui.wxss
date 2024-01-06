@@ -244,9 +244,8 @@ root-portal-content { position: absolute; }
     flex: none;
 }
 .weui-navigation-bar__inner {
-    height: calc(44px + env(safe-area-inset-top));
-    padding-top: env(safe-area-inset-top);
-    box-sizing: border-box;
+    height: var(--height, 44px);
+    padding-top: 0;
     flex-direction: row;
     position: relative;
 }
