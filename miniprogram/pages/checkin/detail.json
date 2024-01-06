@@ -1,6 +1,5 @@
 {
   "usingComponents": {
-    "mp-cells": "weui-miniprogram/cells/cells",
     "mp-cell": "weui-miniprogram/cell/cell",
     "mp-form": "weui-miniprogram/form/form",
     "mp-sticky": "@miniprogram-component-plus/sticky"
