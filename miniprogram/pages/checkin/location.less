@@ -20,30 +20,23 @@
       min-height: 0;
       padding: 12px 16px 16px;
       background-color: var(--weui-BG-2);
-      border-top-left-radius: 14px;
-      border-top-right-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
 
       .indicator {
-        height: 4px;
+        height: 0;
         width: 40px;
         background-color: var(--weui-FG-3);
-        border-radius: 2px;
         display: flex;
         justify-content: center;
         align-items: center;
-
-        &.webview,
-        &.hidden {
-          display: none !important;
-        }
 
         .arrow {
           transform: translateX(2px) rotate(90deg);
           display: block;
           overflow: hidden;
+          opacity: 0;
         }
       }
     }
@@ -75,6 +68,18 @@
       background-color: var(--weui-BG-2);
     }
   }
+
+  &.webview {
+    .bar {
+      border-top-left-radius: 14px;
+      border-top-right-radius: 14px;
+    }
+  }
+
+  &.webview .indicator,
+  .indicator.hidden {
+    display: none !important;
+  }
 }
 
 .no-location-placeholder {
@@ -83,6 +88,7 @@
   font-weight: 700;
   width: 100%;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
 }

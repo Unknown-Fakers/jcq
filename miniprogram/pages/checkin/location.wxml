@@ -2,13 +2,13 @@
 <view class="page" data-weui-theme="{{ theme }}">
   <map wx:if="{{ centerLocation.lat && centerLocation.lng }}" id="map" style="width: 100vw; height: 100vh;" scale="{{ mapScale }}" latitude="{{ centerLocation.lat }}" longitude="{{ centerLocation.lng }}" markers="{{ markers }}" bind:markertap="onMarkerTap" />
 </view>
-<draggable-sheet class="roster" style="height: {{ sheetHeight }}px" min-child-size="{{ fixFullscreenRoster ? 1.0 : 0.2 }}" initial-child-size="{{ 0.4 }}" snap snap-sizes="{{ [0.4] }}" worklet:onsizeupdate="onSheetSizeUpdate" data-weui-theme="{{ theme }}">
-  <scroll-view class="scrollable" scroll-y type="custom" associative-container="draggable-sheet" show-scrollbar="{{ false }}" enable-passive scroll-into-view-within-extent scroll-top="{{ backToTop ? 0 : undefined }}">
+<draggable-sheet class="roster roster--{{ renderer }}" style="height: {{ sheetHeight }}px" min-child-size="{{ fixFullscreenRoster ? 1.0 : 0.2 }}" initial-child-size="{{ renderer === 'skyline' ? 1.0 : 0.4 }}" snap snap-sizes="{{ [0.4] }}" worklet:onsizeupdate="onSheetSizeUpdate" data-weui-theme="{{ theme }}">
+  <scroll-view class="scrollable" scroll-y type="custom" associative-container="draggable-sheet" show-scrollbar="{{ false }}" enable-passive scroll-into-view-within-extent scroll-top="{{ backToTop ? 0 : undefined }}" bounces="{{ markers.length }}">
     <sticky-section>
       <sticky-header>
         <view class="bar">
-          <view class="indicator {{ renderer }} {{ noLocationData ? 'hidden' : '' }}" bind:tap="collapseRosterSheet">
-            <view wx:if="{{ !noLocationData }}" class="arrow">
+          <view class="indicator {{ fixFullscreenRoster ? 'hidden' : '' }}" bind:tap="collapseRosterSheet">
+            <view class="arrow">
               <mp-icon icon="arrow" size="{{ 10 }}" color="{{ theme === 'dark' ? 'rgba(255,255,255,.3)' : 'rgba(0,0,0,.3)' }}" />
             </view>
           </view>
@@ -22,10 +22,10 @@
         <mp-cells wx:if="{{ markers.length }}" ext-class="other-students" title="其他">
           <mp-cell wx:for="{{ markers }}" wx:key="id" list-item wx:if="{{ item.id !== currentMarkerId }}" title="{{ item.title }}" link hover bind:tap="locateToStudent" data-marker-id="{{ item.id }}" />
         </mp-cells>
-        <view wx:else class="no-location-placeholder" style="height: {{ sheetHeight - 83 }}px">
+        <view wx:else class="no-location-placeholder" style="height: {{ sheetHeight - 79 }}px">
           无数据
         </view>
-        <view class="safe-area" />
+        <view wx:if="{{ markers.length }}" class="safe-area" />
       </list-view>
     </sticky-section>
   </scroll-view>

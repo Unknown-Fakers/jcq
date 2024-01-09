@@ -9,11 +9,8 @@ const sheetHeight = windowHeight - statusBarHeight - 44
 ThemedComponentWithComputed({
   data: {
     noLocationData: false,
-    fixFullscreenRoster: false,
-    centerLocation: {
-      lat: 0,
-      lng: 0,
-    },
+    fixFullscreenRoster: true,
+    centerLocation: { lat: 0, lng: 0 },
     markers: [] as any[],
     latitudes: [],
     longitudes: [],
@@ -26,8 +23,8 @@ ThemedComponentWithComputed({
   },
 
   lifetimes: {
-    async attached() {
-      const progress = shared(1)
+    attached() {
+      const progress = shared(0)
       // @ts-ignore
       this.applyAnimatedStyle('.indicator', () => {
         'worklet'
@@ -54,7 +51,6 @@ ThemedComponentWithComputed({
       const query = this.createSelectorQuery()
       query.select('.roster').node()
       query.exec((res) => {
-        console.log(res)
         if (!res) return
         if (res[0] && res[0].node) {
           // @ts-ignore
@@ -75,6 +71,7 @@ ThemedComponentWithComputed({
     },
 
     async getLocation() {
+      wx.showLoading({ title: '加载中', mask: true })
       let result: ApiResponse<any> | undefined
       try {
         result = (await wx.cloud.callFunction({
@@ -88,19 +85,18 @@ ThemedComponentWithComputed({
       } catch (err) {
         wx.showToast({ icon: 'error', title: '获取失败' })
         return
+      } finally {
+        wx.hideLoading()
       }
       if (result?.code !== 0) {
         wx.showToast({ icon: 'error', title: '服务器未响应' })
         return
       } else if (result?.code === 0 && (!result?.data || result?.data?.length === 0)) {
-        this.clearAnimation('.indicator')
-        this.clearAnimation('.arrow')
-        this.setData({ noLocationData: true })
         // @ts-ignore
-        this.roster.scrollTo({ size: 1.0, duration: 500 })
-        setTimeout(() => {
-          this.setData({ fixFullscreenRoster: true })
-        }, 500)
+        this.clearAnimatedStyle('.indicator', [])
+        // @ts-ignore
+        this.clearAnimatedStyle('.arrow', [])
+        this.setData({ noLocationData: true, fixFullscreenRoster: true })
       } else {
         const locationData: any = result?.data
         console.log(locationData)
@@ -126,7 +122,11 @@ ThemedComponentWithComputed({
           centerLocation: {
             lat: latitudes[Math.floor(latitudes.length / 2)],  // 用取中位数法计算中心点
             lng: longitudes[Math.floor(longitudes.length / 2)]
-          }
+          },
+          fixFullscreenRoster: false
+        }, () => {
+          // @ts-ignore
+          this.roster.scrollTo({ size: 0.4 })
         })
         console.log(this.data.markers)
 
@@ -164,7 +164,7 @@ ThemedComponentWithComputed({
       const marker = this.data.markers[markerId]
       // @ts-ignore
       this.getMapContext().then((map: WechatMiniprogram.MapContext) => {
-        map.moveToLocation({ ...marker })
+        map.moveToLocation({ longitude: marker.longitude, latitude: marker.latitude })
       })
       // @ts-ignore
       this.roster.scrollTo({ size: 0.4 })
